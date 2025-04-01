@@ -1,4 +1,4 @@
-# Looty
+# <p align="left"><img src="https://ftp.nkconcept.fr/nomLooty.png" width="250" alt="Looty"></p> Looty
 
 > Bot Discord multi-fonctions avec dashboard web à venir.
 
@@ -51,3 +51,6 @@ LOG_CHANNEL_ID=channel_id_for_command_logging
 ## 🛡️ License
 
 Projet privé pour l’instant — licence à définir.
+<p align="left">
+  <img src="https://ftp.nkconcept.fr/nomLooty.png" width="400" alt="Aperçu bot">
+</p>
