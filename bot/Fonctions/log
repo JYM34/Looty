@@ -1,0 +1,26 @@
+const config = require('../config');
+
+// 🔧 Formatage d'horodatage FR
+const now = () => new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+
+module.exports = {
+    log(message) {
+        console.log(`${config.WHITE}${now()} : ${message}${config.WHITE}`);
+    },
+
+    success(message) {
+        console.log(`${config.WHITE}${now()} : ${config.GREEN}${message}${config.WHITE}`);
+    },
+
+    info(message) {
+        console.log(`${config.WHITE}${now()} : ${config.BLUE}${message}${config.WHITE}`);
+    },
+
+    warn(message) {
+        console.warn(`${config.WHITE}${now()} : ${config.YELLOW}⚠ ${message}${config.WHITE}`);
+    },
+
+    error(message) {
+        console.error(`${config.WHITE}${now()} : ${config.RED}❌ ${message}${config.WHITE}`);
+    }
+};
