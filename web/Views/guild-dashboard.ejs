@@ -1,0 +1,57 @@
+<% title = "Dashboard – " + guild.name %>
+
+<!-- 🔧 Configuration du serveur -->
+
+<h1>🔧 Configuration de <%= guild.name %></h1>
+
+<!-- 👤 Infos de base -->
+<p>ID du serveur : <%= guild.id %></p>
+<p>Connecté en tant que <strong><%= user.username %>#<%= user.discriminator %></strong></p>
+
+<hr>
+
+<!-- ✅ Statut des modules -->
+<h2>🛡️ Statut des modules</h2>
+<p>
+  Modération :
+  <% if (config.moderation) { %>
+    <span class="status on">✅ Activé</span>
+  <% } else { %>
+    <span class="status off">❌ Désactivé</span>
+  <% } %>
+</p>
+
+<hr>
+
+<!-- 📋 Formulaire de config -->
+<form action="/dashboard/<%= guild.id %>" method="POST">
+  <!-- ✏️ Préfixe -->
+  <label for="prefix">Préfixe du bot :</label>
+  <input
+    type="text"
+    id="prefix"
+    name="prefix"
+    value="<%= config.prefix || '!' %>"
+    maxlength="5"
+    required
+  />
+
+  <br><br>
+
+  <!-- ☑️ Activation module -->
+  <label>
+    <input
+      type="checkbox"
+      name="moderation"
+      value="true"
+      <%= config.moderation ? "checked" : "" %>
+    />
+    Activer le module de modération
+  </label>
+
+  <br><br>
+  <button type="submit">💾 Enregistrer</button>
+</form>
+
+<!-- 🔙 Retour -->
+<p><a href="/dashboard">← Retour à mes serveurs</a></p>

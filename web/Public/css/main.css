@@ -1,0 +1,160 @@
+/* 🎨 Style global */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    background-color: #1e1e2f;
+    color: #ffffff;
+    box-sizing: border-box;
+    padding: 2em;
+  }
+  
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  
+  @media screen and (min-width: 769px) {
+    body {
+      padding: 2em 2em 2em 240px;
+    }
+  }
+  
+  h1, h2 {
+    color: #ffcc00;
+    margin-top: 1em;
+  }
+  
+  a {
+    color: #00bfff;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  form {
+    background: #2a2a40;
+    padding: 1em;
+    border-radius: 8px;
+    margin-top: 1em;
+    margin-bottom: 2em;
+  }
+  
+  input[type="text"],
+  input[type="checkbox"] {
+    padding: 0.3em;
+    margin: 0.5em 0;
+    border-radius: 4px;
+    border: none;
+  }
+  
+  button {
+    background: #00bfff;
+    color: white;
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #008ccc;
+    transition: background 0.2s ease;
+  }
+  
+  .status {
+    padding: 0.2em 0.6em;
+    border-radius: 5px;
+    font-weight: bold;
+  }
+  .on {
+    background-color: #4caf50;
+    color: white;
+  }
+  .off {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  /* 📐 Sidebar responsive */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #1e1e2f;
+    color: white;
+    width: 220px;
+    height: 100vh;
+    padding: 1em;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  @media screen and (min-width: 769px) {
+    .sidebar {
+      transform: translateX(0) !important;
+    }
+  }
+  
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8em;
+  }
+  
+  .sidebar-header h1 {
+    font-size: 1.2em;
+    margin: 0;
+    color: #ffcc00;
+  }
+  
+  .sidebar-nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0.5em 0;
+    display: block;
+  }
+  .sidebar-nav a:hover {
+    text-decoration: underline;
+  }
+  
+  .sidebar-nav a.active {
+    background-color: #00bfff;
+    padding: 0.4em 0.8em;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+  
+  /* ☰ Burger menu */
+  .burger {
+    font-size: 1.5em;
+    cursor: pointer;
+    padding: 1em;
+    background: #1e1e2f;
+    color: white;
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .burger {
+      display: block;
+    }
+  
+    body {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  }
+  

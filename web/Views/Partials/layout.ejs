@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | Looty Dashboard</title>
+
+  <!-- 🎨 Style -->
+  <link rel="stylesheet" href="/css/main.css" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <meta name="theme-color" content="#00bfff" />
+</head>
+<body>
+
+  <!-- ☰ Burger (mobile) -->
+  <div class="burger" onclick="toggleSidebar()">☰</div>
+
+  <!-- 📦 Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <!-- 🖼️ Logo Looty -->
+      <img src="/images/logoLooty.png" alt="Logo Looty" width="50" height="50" />
+      <h1>Looty</h1>
+    </div>
+
+    <!-- 👤 Profil utilisateur connecté -->
+    <% if (user) { %>
+      <div style="margin: 1em 0; text-align: center;">
+        <!-- 🖼️ Avatar Discord -->
+        <img
+          src="https://cdn.discordapp.com/avatars/<%= user.id %>/<%= user.avatar %>.png"
+          alt="Avatar de <%= user.username %>"
+          width="64"
+          height="64"
+          style="border-radius: 50%; margin-bottom: 0.3em;"
+        />
+        <!-- 🧾 Nom d'utilisateur complet -->
+        <p style="font-size: 0.9em;">
+            <strong>
+                <%= user.username %>
+                <% if (user.discriminator && user.discriminator !== "0") { %>
+                  #<%= user.discriminator %>
+                <% } %>
+              </strong>
+        </p>
+
+        <!-- 🚪 Lien déconnexion rapide -->
+        <a href="/auth/logout" style="font-size: 0.8em; color: #ff4c4c;">Se déconnecter</a>
+      </div>
+    <% } %>
+
+    <!-- 🔗 Menu navigation -->
+    <nav class="sidebar-nav">
+      <% if (!user) { %>
+        <!-- 🔓 Public -->
+        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">🏠 Accueil</a>
+        <a href="/auth/login">🔑 Connexion</a>
+        <a href="/invite">➕ Ajouter le bot</a>
+      <% } else { %>
+        <!-- 🔐 Privé -->
+        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">🏠 Accueil</a>
+        <a href="/dashboard" class="<%= currentPath.startsWith('/dashboard') ? 'active' : '' %>">📂 Mes serveurs</a>
+      <% } %>
+    </nav>
+  </aside>
+
+  <!-- 📄 Contenu injecté -->
+  <main>
+    <%- body %>
+  </main>
+
+  <!-- 🦶 Footer -->
+  <footer style="margin-top: 2em; padding-top: 1em; border-top: 1px solid #444; font-size: 0.9em;">
+    <p>© 2025 Looty. Tous droits réservés.</p>
+  </footer>
+
+  <!-- 📜 JS Toggle -->
+  <script>
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("open");
+    }
+  </script>
+
+</body>
+</html>

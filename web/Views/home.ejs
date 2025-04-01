@@ -1,0 +1,39 @@
+<% title = "Accueil" %>
+
+<!-- 🏠 Page d'accueil du Dashboard Looty -->
+
+<h1>🎉 Bienvenue sur le Dashboard de Looty</h1>
+
+<!-- 🔓 Si l'utilisateur n'est pas connecté -->
+<% if (!user) { %>
+  <!-- 🔑 Connexion Discord -->
+  <p>
+    <a href="/auth/login">
+      <button>🔑 Se connecter avec Discord</button>
+    </a>
+  </p>
+
+  <!-- ➕ Ajouter le bot -->
+  <p>
+    <a href="/invite">
+      ➕ Ajouter le bot à mon serveur
+    </a>
+  </p>
+
+<!-- 🔐 Si l'utilisateur est connecté -->
+<% } else { %>
+  <!-- 👤 Bienvenue -->
+  <p>👋 Bonjour <strong><%= user.username %>#<%= user.discriminator %></strong></p>
+
+  <!-- 📂 Dashboard -->
+  <p>
+    <a href="/dashboard">
+      <button>📂 Accéder au Dashboard</button>
+    </a>
+  </p>
+
+  <!-- 🚪 Déconnexion -->
+  <p>
+    <a href="/auth/logout">🚪 Se déconnecter</a>
+  </p>
+<% } %>
