@@ -1,21 +1,22 @@
-const { ActivityType } = require("discord.js");
-const config = require('../config');
-const log = require('../Fonctions/log');
+// 📦 Importe la configuration globale (couleurs console, etc.)
+const config = require("../config");
+
+// ⏱️ Fonction centrale pour planifier l'envoi des jeux Epic + mise à jour de statut
+const scheduleEpicTask = require("../Fonctions/scheduleEpicTask");
 
 module.exports = {
-    name: 'ready',
-    once: true,
-    async execute(client) {
-        // Définir le statut du bot
-        client.user.setPresence({
-            activities: [{
-                name: 'en ligne',
-                type: ActivityType.Custom,
-            }],
-            status: 'online',
-        });
+  name: "ready",     // Nom de l’événement Discord
+  once: true,        // Ne s’exécute qu’une seule fois à la connexion
 
-        // Log simple quand le bot est prêt
-        log.success(`✅ ${config.GREEN}Bot opérationnel !${config.WHITE}`);
-    }
+  /**
+   * 🔁 Événement déclenché quand le bot est prêt
+   * @param {Client} client - Instance du bot Discord
+   */
+  async execute(client) {
+    // ✅ Affichage dans le terminal que le bot est bien prêt
+    log.success(`✅ ${config.GREEN}Bot opérationnel !${config.WHITE}`);
+
+    // 🚀 Lancement de la logique Epic Games (embed + statut)
+    scheduleEpicTask(client);
+  }
 };

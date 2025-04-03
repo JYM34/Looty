@@ -1,7 +1,6 @@
 const { readdirSync, existsSync } = require('fs');
 const path = require('path');
 const config = require('../config');
-const log = require('../Fonctions/log');
 
 
 module.exports = client => {

@@ -1,6 +1,5 @@
 const fs = require('fs')
 const config = require('../config')
-const log = require('../Fonctions/log');
 
 
 module.exports.TestFile = TestFile

@@ -1,11 +1,11 @@
-const config = require('../config');
+const config = require('../bot/config');
 
 // 🔧 Formatage d'horodatage FR
 const now = () => new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
 
 module.exports = {
-    log(message) {
-        console.log(`${config.WHITE}${now()} : ${message}${config.WHITE}`);
+    debug(message) {
+        console.log(`${config.WHITE}${now()} :🐞 ${config.BLUE}${message}${config.WHITE}`);
     },
 
     success(message) {

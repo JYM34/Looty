@@ -1,3 +1,4 @@
+
 # <p align="left"><img src="https://ftp.nkconcept.fr/nomLooty.png" width="250" alt="Looty"></p> Looty
 
 > Bot Discord multi-fonctions avec dashboard web.
@@ -12,9 +13,10 @@
 - Architecture modulaire :
   - `bot/Events` — gestion des événements Discord
   - `bot/SlashCommands` — commandes slash dynamiques
-  - `bot/Fonctions` — fonctions utilitaires (logger, etc.)
+  - `bot/Fonctions` — fonctions utilitaires (logger, formats, API Epic, etc.)
   - `bot/Loaders` — chargement dynamique
   - `web/` — dashboard (Express + EJS)
+  - `shared/` — fichiers communs (ex: salons configurables)
 
 ---
 
@@ -42,6 +44,15 @@ DOMAIN=https://looty.nkconcept.fr
 SESSION_SECRET=your_random_secret
 CALLBACK_URL=https://looty.nkconcept.fr/login/callback
 ```
+
+---
+
+## 🎮 Fonctionnalité : jeux gratuits Epic Games
+
+- ✅ Affiche automatiquement les jeux gratuits dès qu’ils sont mis à jour
+- 🕐 Le statut du bot affiche le temps restant avant le prochain jeu
+- 🤖 Commande slash `/epic` pour forcer l’envoi des jeux à la main
+- 📁 Configuration des salons via `shared/channels.json`
 
 ---
 

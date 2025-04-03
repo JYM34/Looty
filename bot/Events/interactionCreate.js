@@ -2,7 +2,6 @@ const { InteractionType } = require("discord.js");
 const { readdirSync, existsSync } = require("fs");
 const path = require("path");
 require("dotenv").config();
-const log = require("../Fonctions/log");
 
 module.exports = {
     name: "interactionCreate",
@@ -36,7 +35,7 @@ module.exports = {
             await sendDiscordLog(client, interaction, process.env.LOG_CHANNEL_ID);
 
             // Exécution de la commande
-            await command.run(client, interaction, interaction.options);
+            await command.run(client, interaction);
         } catch (error) {
             log.error(`Erreur exécution commande '${interaction.commandName}' : ${error.message}`);
             await interaction.reply({
@@ -47,19 +46,40 @@ module.exports = {
     }
 };
 
-// 🔔 Fonction de log Discord dans un canal spécifique
+/**
+ * 🔔 Fonction de log Discord dans un canal spécifique
+ * Envoie un message dans un canal défini pour tracer les commandes utilisées.
+ *
+ * @param {Client} client - Le client Discord
+ * @param {Interaction} interaction - L'interaction déclenchée (slash command)
+ * @param {string} channelId - L'ID du salon où envoyer les logs
+ */
 async function sendDiscordLog(client, interaction, channelId) {
-    if (!channelId) return; // Ne fait rien si aucune ID fournie
-
+    if (!channelId) return; // 🛑 Ignore si aucun salon configuré
+  
     try {
-        const channel = await client.channels.fetch(channelId);
-        if (channel) {
-            await channel.send(`📥 ${interaction.user.tag} a utilisé la commande \`/${interaction.commandName}\``);
-        } else {
-            log.warn(`Canal ID ${channelId} introuvable.`);
-        }
+      // 🔍 Récupère le salon cible
+      const channel = await client.channels.fetch(channelId);
+      if (!channel || !channel.isTextBased()) {
+        log.warn(`⚠️ Canal log introuvable ou non textuel (${channelId})`);
+        return;
+      }
+  
+      // 🔐 Vérifie que le bot a la permission d'envoyer un message
+      const me = channel.guild.members.me;
+      const perms = channel.permissionsFor(me);
+      if (!perms || !perms.has("SendMessages")) {
+        log.warn("⚠️ Le bot n’a pas la permission d’envoyer un message dans ce salon.");
+        return;
+      }
+  
+      // ✅ Envoie le message de log
+      await channel.send(`📥 ${interaction.user.tag} a utilisé la commande \`/${interaction.commandName}\``);
+  
     } catch (err) {
-        log.error(`Erreur lors de l'envoi dans le canal de log : ${err.message}`);
+      // ❌ Gestion des erreurs
+      log.error(`❌ Erreur lors de l'envoi dans le canal de log : ${err.message}`);
     }
-}
+  }
+  
 

@@ -2,7 +2,6 @@ const { readdirSync, existsSync } = require('fs');
 const path = require('path');
 const { REST, Routes } = require('discord.js');
 const config = require('../config');
-const log = require('../Fonctions/log');
 
 module.exports = async client => {
     const commands = [];
