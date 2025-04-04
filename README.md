@@ -1,78 +1,101 @@
+# 🕹️ Looty — Bot Discord + Dashboard Web
 
-# <p align="left"><img src="https://ftp.nkconcept.fr/nomLooty.png" width="250" alt="Looty"></p> Looty
+Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu pour :
 
-> Bot Discord multi-fonctions avec dashboard web.
-
-## 🧰 Stack technique
-
-- [Node.js](https://nodejs.org/) (v18+ recommandé)
-- [Discord.js v14](https://discord.js.org/)
-- [PM2](https://pm2.io/) pour la supervision
-- [Express.js](https://expressjs.com/) + [EJS](https://ejs.co/) (pour le dashboard)
-- [express-ejs-layouts](https://www.npmjs.com/package/express-ejs-layouts) pour un layout global
-- Architecture modulaire :
-  - `bot/Events` — gestion des événements Discord
-  - `bot/SlashCommands` — commandes slash dynamiques
-  - `bot/Fonctions` — fonctions utilitaires (logger, formats, API Epic, etc.)
-  - `bot/Loaders` — chargement dynamique
-  - `web/` — dashboard (Express + EJS)
-  - `shared/` — fichiers communs (ex: salons configurables)
+- 🎁 Afficher les jeux gratuits Epic Games chaque semaine  
+- 📤 Envoyer automatiquement les jeux dans les salons définis  
+- ⏰ Mettre à jour dynamiquement le statut du bot Discord  
+- 🧹 Nettoyer les anciens messages  
+- 🔧 Offrir des commandes slash pratiques (/epic & /force-check)
 
 ---
 
-## 🚀 Lancement local
+## 🚀 Fonctionnalités
+
+### 🎯 Envoi des jeux gratuits Epic Games
+- Récupération via l'API `epic-games-free`
+- Affichage des **jeux actuels** et **à venir** dans deux salons distincts
+- Génération d'**embeds dynamiques** avec :
+  - 🖼️ Image du jeu
+  - 📅 Dates de début et fin
+  - 💰 Prix original
+  - 🔗 Bouton “Ajouter à Epic Games” (`🏷️`)
+
+### ⏱ Planification automatique
+- Déclenchement automatique **à la fin de chaque promo**
+- ⚠️ Ajout d’un **délai de sécurité de 1 min** pour éviter que le bot vérifie trop tôt
+
+### 🟢 Statut Discord dynamique
+- Affiche le temps restant jusqu’au prochain jeu avec `Prochain jeu : 2j 03h 15mn`
+- Mis à jour toutes les minutes
+
+---
+
+## 🔧 Commandes Slash
+
+### `/epic`
+> Affiche les jeux Epic Games dans les salons configurés.
+
+- 🔁 Peut être utilisée à tout moment
+- 📤 Réutilise les jeux récupérés
+- ❌ Ne met pas à jour le statut du bot
+
+### `/force-check`
+> Force un nouveau check complet de l’API Epic Games
+
+- 🔍 Vérifie si de nouveaux jeux sont apparus
+- 📤 Envoie les jeux dans les salons
+- ⏰ Met à jour le statut du bot avec un délai de sécurité de 60s
+- ✅ Très utile pour les admins ou tests
+
+---
+
+## 🔧 Configuration
+
+### Fichier `shared/channels.json`
+
+Définir les IDs de salons utilisés pour Epic Games :
+
+```json
+{
+  "epicGames": {
+    "currentGamesChannelId": "ID_DU_SALON_ACTUEL",
+    "nextGamesChannelId": "ID_DU_SALON_PROCHAIN"
+  },
+  "moderation": {
+    "logChannel": "ID_DU_SALON_LOG"
+  }
+}
+```
+
+---
+
+## 🧪 Démo rapide
 
 ```bash
-cp .env.example .env
-npm install
-npm run looty
-```
-
-> Utilise `pm2` pour lancer le bot et le dashboard avec redémarrage automatique et logs persistants.
-
----
-
-## ⚙️ Variables d’environnement (`.env`)
-
-```env
-TOKEN=your_discord_token
-CLIENT_ID=your_discord_app_id
-GUILD_ID=your_guild_id
-LOG_CHANNEL_ID=channel_id_for_command_logging
-
-DOMAIN=https://looty.nkconcept.fr
-SESSION_SECRET=your_random_secret
-CALLBACK_URL=https://looty.nkconcept.fr/login/callback
+/epic         # Affiche les jeux dans les salons
+/force-check  # Force un check + mise à jour du statut
 ```
 
 ---
 
-## 🎮 Fonctionnalité : jeux gratuits Epic Games
+## 🛠 Stack Technique
 
-- ✅ Affiche automatiquement les jeux gratuits dès qu’ils sont mis à jour
-- 🕐 Le statut du bot affiche le temps restant avant le prochain jeu
-- 🤖 Commande slash `/epic` pour forcer l’envoi des jeux à la main
-- 📁 Configuration des salons via `shared/channels.json`
-
----
-
-## 🌐 Fonctionnalités du dashboard
-
-- 🔐 Connexion sécurisée via Discord OAuth2
-- 📂 Liste des serveurs administrés par l'utilisateur
-- 🔧 Configuration serveur par serveur :
-  - Préfixe personnalisé
-  - Modules activables (modération, etc.)
-- 🎨 Sidebar responsive avec détection mobile
-- 🖼️ Avatar et nom utilisateur affiché
-- 🧠 Layout EJS global
+- Discord.js v14+
+- Express.js (dashboard)
+- EJS (templates)
+- API custom `epic-games-free`
+- PM2 (démarrage en prod)
 
 ---
 
-## 🛡️ License
+## 👤 Auteur
 
-Projet privé pour l’instant — licence à définir.
+Bot développé par **JYM** 🥃  
+Code commenté et structuré pour une lecture fluide & maintenance easy.
 
-<p align="left">
-  <img src="https://ftp.nkconcept.fr/nomLooty.png" width="400" alt="Aperçu bot">
-</p>
+---
+
+## 📄 Licence
+
+MIT – libre d'utilisation, d’adaptation et d'amélioration.

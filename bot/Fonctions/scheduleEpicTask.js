@@ -25,17 +25,16 @@ module.exports = async function scheduleEpicTask(client) {
   // 📆 Calcul du temps jusqu’à la fin de la promo du 1er jeu actuel
   const end = new Date(currentGames[0].expiryDate).getTime(); // ✅ Nouveau champ : expiryDate
   const now = Date.now();
-  const delay = end - now + 10_000; // ⏱️ Ajout de 10s pour marge de sécurité
-
-  // 🔁 Planifie l'envoi à la fin de la promo
+  const securityDelay = 60_000; // 🕐 +1 minute pour laisser Epic se mettre à jour
+  const delay = end - now + securityDelay;
+  
   if (delay > 0) {
-    log.info(`⏱️  Prochaine promo dans ${Math.round(delay / 1000)} secondes.`);
-
+    log.info(`⏱️ Prochaine vérif dans ${Math.round(delay / 1000)} sec (+1min de sécurité).`);
+  
     setTimeout(async () => {
-      // 📤 Envoi des embeds sur les salons configurés
-      await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId); // 🎯 Vérifie que cette fonction accepte toujours les deux tableaux (voir ci-dessous)
+      await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);
       log.success("🎉 Jeux Epic envoyés !");
-      scheduleEpicTask(client); // 🔁 Replanifie
+      scheduleEpicTask(client); // Replanifie après exécution
     }, delay);
   }
 
