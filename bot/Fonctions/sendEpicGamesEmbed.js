@@ -64,7 +64,7 @@ module.exports = async function sendEpicGamesEmbed(client, currentChannelId, nex
       .setURL(game.url)
       .setAuthor({
         name: `${game.author} (${game.offerType})`,
-        iconURL: "https://ftp.nkconcept.fr/logoNK.png"
+        iconURL: "https://ftp.nkconcept.fr/faviconLooty.png"
       })
       .setDescription(game.description?.slice(0, 200) || "Pas de description disponible.")
       .setThumbnail(game.thumbnail)
@@ -76,8 +76,8 @@ module.exports = async function sendEpicGamesEmbed(client, currentChannelId, nex
       .setImage(game.image)
       .setTimestamp()
       .setFooter({
-        text: "Envoyé par EpicGames Bot",
-        iconURL: "https://ftp.nkconcept.fr/logoNK.png"
+        text: "Envoyé par Looty",
+        iconURL: "https://ftp.nkconcept.fr/faviconLooty.png"
       });
 
     // 🔘 Bouton d'action (si jeu en cours uniquement)
