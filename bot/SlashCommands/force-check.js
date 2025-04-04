@@ -1,45 +1,49 @@
 // 📦 Imports nécessaires
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js"); // Pour créer une commande slash avec permissions
-const sendEpicGamesEmbed = require("../Fonctions/sendEpicGamesEmbed");      // Envoie les jeux dans les salons Discord
-const updateBotStatus = require("../Fonctions/updateBotStatus");            // Met à jour le statut du bot (temps restant)
-const { getEpicFreeGames } = require("epic-games-free");                    // Lib perso pour récupérer les jeux Epic
-const channels = require("../../shared/channels.json");                     // Config des salons (current / next)
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");  // Builder pour créer une slash command
+const sendEmbeds = require("../Modules/epic/sendEmbeds");                    // Envoie les jeux Epic en embed
+const updateStatus = require("../Modules/epic/updateStatus");                // Met à jour le statut du bot
+const { getEpicFreeGames } = require("epic-games-free");                     // Récupère les jeux gratuits Epic
+const channels = require("../../shared/channels.json");                      // Config JSON des salons
 
 module.exports = {
-  // 🔧 Définition de la commande slash
+  // 🛠️ Définition de la commande /force-check
   data: new SlashCommandBuilder()
-    .setName("force-check")                                                  // Nom de la commande
-    .setDescription("🔁 Force l’envoi immédiat des jeux Epic Games")        // Description affichée dans Discord
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),        // Seuls les admins peuvent l’utiliser
+    .setName("force-check")
+    .setDescription("🔁 Force l’envoi immédiat des jeux Epic Games")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), // Réservée aux admins
 
-  // 🚀 Ce qui se passe quand un user exécute /force-check
+  /**
+   * ▶️ Fonction exécutée quand on utilise la commande /force-check
+   * @param {import('discord.js').Client} client - Instance du bot
+   * @param {import('discord.js').ChatInputCommandInteraction} interaction - Interaction Discord reçue
+   */
   async run(client, interaction) {
     try {
-      // ⏳ On prépare une réponse éphémère (invisible pour les autres)
+      // ⏳ On répond de façon différée pour éviter le timeout (éphémère = visible que par l'utilisateur)
       await interaction.deferReply({ flags: 64 }); // 64 = Interaction ephemeral
 
-      // 🎯 Récupération des salons ciblés (config dans channels.json)
+      // 📥 Récupération des salons à partir de la config
       const { currentGamesChannelId, nextGamesChannelId } = channels.epicGames;
 
-      // 🔁 On check l’API Epic Games pour récupérer les jeux gratuits actuels
+      // 📡 Appel de l'API pour obtenir les jeux gratuits actuels
       const { currentGames } = await getEpicFreeGames();
 
-      // 📤 On envoie les embeds dans les bons salons (jeux actuels + à venir)
-      await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);
+      // 📤 Envoie des jeux dans les salons configurés
+      await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId);
 
-      // 🕰 Si un jeu est trouvé → on met à jour le statut du bot
+      // 🕹️ Mise à jour du statut si on a bien un jeu en cours
       if (currentGames?.[0]) {
-        const end = new Date(currentGames[0].expiryDate).getTime() + 60_000; // 🛡️ +1 min de marge de sécurité
-        log.info(`⌛ Délai de sécurité : +1min ajouté avant mise à jour du statut.`);
-        updateBotStatus(client, end);
+        const end = new Date(currentGames[0].expiryDate).getTime() + 60_000; // On ajoute une marge de sécurité
+        log.info("⌛ +1min de marge ajoutée avant mise à jour du statut.");
+        updateStatus(client, end);
       }
 
-      // ✅ On répond dans Discord que tout s’est bien passé
+      // ✅ Message de confirmation dans Discord
       await interaction.editReply("✅ Vérification Epic Games forcée !");
     } catch (err) {
-      // ❌ Gestion des erreurs si l’API ou Discord plante
+      // ❌ Gestion propre des erreurs (réponse + log console)
       console.error("❌ Erreur /force-check :", err);
-      await interaction.editReply("❌ Une erreur est survenue.");
+      await interaction.editReply("❌ Une erreur est survenue pendant l'exécution de la commande.");
     }
   }
 };

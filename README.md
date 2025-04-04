@@ -13,7 +13,7 @@ Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu po
 ## 🚀 Fonctionnalités
 
 ### 🎯 Envoi des jeux gratuits Epic Games
-- Récupération via l'API `epic-games-free`
+- Récupération via l'API [`epic-games-free`](https://github.com/JYM34/EpicGamesFree)
 - Affichage des **jeux actuels** et **à venir** dans deux salons distincts
 - Génération d'**embeds dynamiques** avec :
   - 🖼️ Image du jeu
@@ -84,7 +84,7 @@ Définir les IDs de salons utilisés pour Epic Games :
 - Discord.js v14+
 - Express.js (dashboard)
 - EJS (templates)
-- API custom `epic-games-free`
+- API custom [`epic-games-free`](https://github.com/JYM34/EpicGamesFree)
 - PM2 (démarrage en prod)
 
 ---

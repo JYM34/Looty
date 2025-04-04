@@ -1,5 +1,5 @@
 const { ActivityType } = require("discord.js");
-const formatTimeLeft = require("./formatTimeLeft");
+const formatTimeLeft = require("../../Fonctions/formatTimeLeft");
 
 /**
  * 🕹️ Met à jour dynamiquement le statut du bot selon la promo Epic

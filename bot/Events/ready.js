@@ -2,7 +2,7 @@
 const config = require("../config");
 
 // ⏱️ Fonction centrale pour planifier l'envoi des jeux Epic + mise à jour de statut
-const scheduleEpicTask = require("../Fonctions/scheduleEpicTask");
+const scheduler = require("../Modules/epic/scheduler");
 
 module.exports = {
   name: "ready",     // Nom de l’événement Discord
@@ -17,6 +17,6 @@ module.exports = {
     log.success(`✅ ${config.GREEN}Bot opérationnel !${config.WHITE}`);
 
     // 🚀 Lancement de la logique Epic Games (embed + statut)
-    scheduleEpicTask(client);
+    scheduler(client);
   }
 };
