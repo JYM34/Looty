@@ -1,16 +1,14 @@
 <% title = "Dashboard – " + guild.name %>
 
-<!-- 🔧 Configuration du serveur -->
-
 <h1>🔧 Configuration de <%= guild.name %></h1>
 
-<!-- 👤 Infos de base -->
+<!-- 👤 Infos -->
 <p>ID du serveur : <%= guild.id %></p>
 <p>Connecté en tant que <strong><%= user.username %>#<%= user.discriminator %></strong></p>
 
 <hr>
 
-<!-- ✅ Statut des modules -->
+<!-- ✅ Modules -->
 <h2>🛡️ Statut des modules</h2>
 <p>
   Modération :
@@ -23,35 +21,71 @@
 
 <hr>
 
-<!-- 📋 Formulaire de config -->
 <form action="/dashboard/<%= guild.id %>" method="POST">
   <!-- ✏️ Préfixe -->
   <label for="prefix">Préfixe du bot :</label>
-  <input
-    type="text"
-    id="prefix"
-    name="prefix"
-    value="<%= config.prefix || '!' %>"
-    maxlength="5"
-    required
-  />
+  <input type="text" id="prefix" name="prefix" value="<%= config.prefix || '!' %>" maxlength="5" required />
+  <br><br>
+
+  <!-- ✅ Activer modération -->
+  <label>
+    <input type="checkbox" name="moderation" value="true" <%= config.moderation ? "checked" : "" %> />
+    Activer le module de modération
+  </label>
+
+  <hr>
+
+  <!-- 🎮 Salon pour jeux gratuits -->
+  <label for="epicChannel">📦 Salon Jeux Gratuits :</label>
+  <select id="epicChannel" name="epicChannel" required>
+    <option disabled selected value="">— Choisir un salon —</option>
+    <% Object.values(groupedChannels).forEach(group => { %>
+      <optgroup label="<%= group.name %>">
+        <% group.channels.forEach(channel => { %>
+          <option value="<%= channel.id %>" <%= config.epicChannel === channel.id ? 'selected' : '' %>>
+            #<%= channel.name %>
+          </option>
+        <% }) %>
+      </optgroup>
+    <% }) %>
+  </select>
 
   <br><br>
 
-  <!-- ☑️ Activation module -->
-  <label>
-    <input
-      type="checkbox"
-      name="moderation"
-      value="true"
-      <%= config.moderation ? "checked" : "" %>
-    />
-    Activer le module de modération
-  </label>
+  <!-- ⏳ Salon pour jeux à venir -->
+  <label for="epicComingSoonChannel">⏳ Salon Prochainement :</label>
+  <select id="epicComingSoonChannel" name="epicComingSoonChannel" required>
+    <option disabled selected value="">— Choisir un salon —</option>
+    <% Object.values(groupedChannels).forEach(group => { %>
+      <optgroup label="<%= group.name %>">
+        <% group.channels.forEach(channel => { %>
+          <option value="<%= channel.id %>" <%= config.epicComingSoonChannel === channel.id ? 'selected' : '' %>>
+            #<%= channel.name %>
+          </option>
+        <% }) %>
+      </optgroup>
+    <% }) %>
+  </select>
+
+  <br><br>
+
+  <!-- 📝 Salon pour logs -->
+  <label for="epicLogsChannel">📝 Salon Logs Epic :</label>
+  <select id="epicLogsChannel" name="epicLogsChannel" required>
+    <option disabled selected value="">— Choisir un salon —</option>
+    <% Object.values(groupedChannels).forEach(group => { %>
+      <optgroup label="<%= group.name %>">
+        <% group.channels.forEach(channel => { %>
+          <option value="<%= channel.id %>" <%= config.epicLogsChannel === channel.id ? 'selected' : '' %>>
+            #<%= channel.name %>
+          </option>
+        <% }) %>
+      </optgroup>
+    <% }) %>
+  </select>
 
   <br><br>
   <button type="submit">💾 Enregistrer</button>
 </form>
 
-<!-- 🔙 Retour -->
 <p><a href="/dashboard">← Retour à mes serveurs</a></p>

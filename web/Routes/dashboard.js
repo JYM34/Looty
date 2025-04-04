@@ -1,61 +1,79 @@
+// 📁 web/Routes/dashboard.js
+
 const express = require("express");
 const router = express.Router();
-const authGuard = require("../Middlewares/authGuard"); // 🛡️ Protection des routes
-const { getGuildConfig, setGuildConfig } = require("../Utils/db"); // 💾 Accès à la base JSON
+const authGuard = require("../Middlewares/authGuard"); // 🔐 Auth middleware
+const { getGuildConfig, setGuildConfig } = require("../Utils/db"); // 💾 Base JSON
 
-// 🧭 Route : GET /dashboard
-// Liste tous les serveurs où l'utilisateur a les permissions nécessaires
+// 🧭 Route GET /dashboard → liste des serveurs gérables par l'utilisateur
 router.get("/", authGuard, (req, res) => {
-  const guilds = req.user.guilds;
+  const user = req.user;
 
-  // 🎯 On filtre uniquement les serveurs administrables (permission 0x20)
-  const managedGuilds = guilds.filter(guild =>
-    (guild.permissions & 0x20) === 0x20
-  );
+  // 🎯 On filtre les serveurs où l'utilisateur a MANAGE_GUILD (0x20)
+  const managedGuilds = user.guilds.filter(g => (g.permissions & 0x20) === 0x20);
 
   res.render("dashboard", {
-    user: req.user,
+    user,
     guilds: managedGuilds
   });
 });
 
-// 🧭 Route : GET /dashboard/:guildId
-// Affiche la configuration actuelle du serveur
-router.get("/:guildId", authGuard, (req, res) => {
+// ⚙️ Route GET /dashboard/:guildId → affichage de la config du serveur
+router.get("/:guildId", authGuard, async (req, res) => {
+  const user = req.user;
   const guildId = req.params.guildId;
-  const guild = req.user.guilds.find(g => g.id === guildId);
+  const config = await getGuildConfig(guildId);
 
-  if (!guild) {
-    return res.status(403).send("Accès refusé à ce serveur.");
+  const guild = user.guilds.find(g => g.id === guildId);
+  if (!guild) return res.redirect("/dashboard");
+
+  // ✅ Récupération du serveur dans le cache du bot
+  const guildInCache = req.client.guilds.cache.get(guildId);
+
+  let groupedChannels = {};
+
+  if (guildInCache) {
+    const textChannels = guildInCache.channels.cache
+      .filter(c => c.type === 0 && c.viewable); // texte + visible
+
+    textChannels.forEach(channel => {
+      const parent = channel.parent || { id: "none", name: "📁 Sans catégorie" };
+      if (!groupedChannels[parent.id]) {
+        groupedChannels[parent.id] = {
+          name: parent.name,
+          channels: []
+        };
+      }
+      groupedChannels[parent.id].channels.push({
+        id: channel.id,
+        name: channel.name
+      });
+    });
   }
 
-  const config = getGuildConfig(guildId); // 📥 Récupère la config actuelle depuis la "DB"
-
   res.render("guild-dashboard", {
-    user: req.user,
+    user,
     guild,
-    config
+    config,
+    groupedChannels
   });
 });
 
-// 🧭 Route : POST /dashboard/:guildId
-// Enregistre les modifications de configuration du serveur
-router.post("/:guildId", authGuard, (req, res) => {
+// 💾 Route POST /dashboard/:guildId → enregistre la config
+router.post("/:guildId", authGuard, async (req, res) => {
   const guildId = req.params.guildId;
-  const prefix = req.body.prefix;
-  const moderation = req.body.moderation === "true"; // ✅ case cochée = true
+  const form = req.body;
 
-  const guild = req.user.guilds.find(g => g.id === guildId);
-  if (!guild) {
-    return res.status(403).send("Accès refusé à ce serveur.");
-  }
+  // 💾 Nouvelle configuration à sauvegarder
+  const newConfig = {
+    prefix: form.prefix || "!",
+    moderation: form.moderation === "true",
+    epicChannel: form.epicChannel,
+    epicComingSoonChannel: form.epicComingSoonChannel,
+    epicLogsChannel: form.epicLogsChannel
+  };
 
-  // 💾 On met à jour la config JSON du serveur
-  setGuildConfig(guildId, {
-    prefix: prefix || "!",
-    moderation
-  });
-
+  await setGuildConfig(guildId, newConfig);
   res.redirect(`/dashboard/${guildId}`);
 });
 

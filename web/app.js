@@ -1,53 +1,53 @@
+// 📦 web/app.js
+
 const express = require("express");
 const session = require("express-session");
 const passport = require("./passport");
 const path = require("path");
-const expressLayouts = require("express-ejs-layouts"); // 🧩 Pour les layouts globaux EJS
+const expressLayouts = require("express-ejs-layouts");
 
-const app = express();
+module.exports = (client) => {
+  const app = express();
 
-// 🖼️ EJS + Layouts
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "Views"));
-app.use(expressLayouts); // ⚙️ Active express-ejs-layouts
-app.set("layout", "Partials/layout"); // 📄 Définit le layout par défaut (sans extension .ejs)
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "Views"));
+  app.use(expressLayouts);
+  app.set("layout", "Partials/layout");
 
-// 🗂️ Fichiers statiques (CSS, images, JS client)
-app.use(express.static(path.join(__dirname, "Public")));
+  app.use(express.static(path.join(__dirname, "Public")));
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
 
-// 🧠 Middleware pour lire les données des formulaires (POST)
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json()); // utile si tu acceptes aussi du JSON
+  app.use(session({
+    secret: "lootySecret",
+    resave: false,
+    saveUninitialized: false
+  }));
 
-// 🔐 Sessions utilisateur
-app.use(session({
-  secret: "lootySecret", // 🔐 À stocker en variable d'environnement en prod
-  resave: false,
-  saveUninitialized: false
-}));
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-// 🔐 Initialisation de Passport (auth Discord)
-app.use(passport.initialize());
-app.use(passport.session());
+  // 🔁 Ajoute client + user globalement dans les vues
+  app.use((req, res, next) => {
+    req.client = client;
+    res.locals.user = req.user || null;
+    res.locals.currentPath = req.path;
+    next();
+  });
 
-// 📍 Middleware global : injection du chemin courant dans chaque vue
-app.use((req, res, next) => {
-  res.locals.currentPath = req.path;
-  next();
-});
+  // 🌐 Routes
+  app.use("/", require("./Routes/index"));
+  app.use("/auth", require("./Routes/auth"));
+  app.use("/dashboard", require("./Routes/dashboard"));
+  app.use("/invite", require("./Routes/invite"));
 
-// 🌐 Routes principales
-app.use("/", require("./Routes/index"));
-app.use("/auth", require("./Routes/auth"));
-app.use("/dashboard", require("./Routes/dashboard"));
-app.use("/", require("./Routes/invite")); // 🧭 Peut être regroupé si besoin
+  // ❌ 404
+  app.use((req, res) => {
+    res.status(404).render("404");
+  });
 
-// ❌ Page 404 (à placer tout en bas)
-app.use((req, res) => {
-  res.status(404).render("404");
-});
-
-// 🚀 Lancement du serveur
-app.listen(3000, () => {
-  console.log("🌐 Dashboard en ligne : http://localhost:3000");
-});
+  // 🚀 Lancement du dashboard
+  app.listen(3000, () => {
+    console.log("🌐 Dashboard en ligne : http://localhost:3000");
+  });
+};

@@ -4,7 +4,8 @@
   "description": "Bot Discord + dashboard web",
   "main": "bot/index.js",
   "scripts": {
-    "start": "pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs Looty",
+    "start": "pm2 start start.js --name looty-full",
+    "start2": "pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs Looty",
     "looty": "pm2 flush && pm2 delete Looty && pm2 delete eLooty && pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs Looty",
     "elooty": "pm2 flush && pm2 delete Looty && pm2 delete eLooty && pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs eLooty"
   },
@@ -20,6 +21,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",
     "fs": "^0.0.1-security",
+    "node-schedule": "^2.1.1",
     "passport": "^0.7.0",
     "passport-discord": "^0.1.4",
     "path": "^0.12.7"

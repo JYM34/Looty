@@ -1,6 +1,13 @@
 {
   "709802369738866749": {
     "prefix": "!",
-    "moderation": true
+    "moderation": true,
+    "epicChannel": "1356412763349581924",
+    "epicComingSoonChannel": "1356412712342654976",
+    "epicLogsChannel": "1073408672979484692"
+  },
+  "610578922861494272": {
+    "prefix": "!",
+    "moderation": false
   }
 }
