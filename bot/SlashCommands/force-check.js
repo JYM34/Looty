@@ -3,7 +3,6 @@ const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");  // 
 const sendEmbeds = require("../Modules/epic/sendEmbeds");                    // Envoie les jeux Epic en embed
 const updateStatus = require("../Modules/epic/updateStatus");                // Met à jour le statut du bot
 const { getEpicFreeGames } = require("epic-games-free");                     // Récupère les jeux gratuits Epic
-const channels = require("../../shared/channels.json");                      // Config JSON des salons
 
 module.exports = {
   // 🛠️ Définition de la commande /force-check
@@ -23,12 +22,16 @@ module.exports = {
       await interaction.deferReply({ flags: 64 }); // 64 = Interaction ephemeral
 
       // 📥 Récupération des salons à partir de la config
-      const { currentGamesChannelId, nextGamesChannelId } = channels.epicGames;
+      const channels = require("../../shared/guilds.json");
+      const guildId = interaction.guildId;
+      const currentGamesChannelId = channels[guildId].currentGamesChannelId;
+      const nextGamesChannelId = channels[guildId].nextGamesChannelId;
 
       // 📡 Appel de l'API pour obtenir les jeux gratuits actuels
       const { currentGames } = await getEpicFreeGames();
 
       // 📤 Envoie des jeux dans les salons configurés
+      console.log("sendEmbeds ",guildId, currentGamesChannelId, nextGamesChannelId)
       await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId);
 
       // 🕹️ Mise à jour du statut si on a bien un jeu en cours

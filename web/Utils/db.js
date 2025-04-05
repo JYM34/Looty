@@ -2,7 +2,7 @@ const fs = require("fs");
 const path = require("path");
 
 // 📁 Chemin vers le fichier JSON contenant les configs des serveurs
-const filePath = path.join(__dirname, "../Data/guilds.json");
+const filePath = path.join(__dirname, "../../shared/guilds.json");
 
 // 📖 Lit l'intégralité de la base (tous les serveurs)
 function readDB() {

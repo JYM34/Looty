@@ -8,7 +8,7 @@ const fs = require("fs");
 const updateStatus = require("./updateStatus"); // Helper safe pour le statut du bot
 
 // 📁 Récupération de la configuration des salons depuis un fichier JSON partagé
-const channelsPath = path.join(__dirname, "../../../shared/channels.json");
+const channelsPath = path.join(__dirname, "../../../shared/guilds.json");
 const { currentGamesChannelId, nextGamesChannelId } = JSON.parse(
   fs.readFileSync(channelsPath, "utf-8")
 );

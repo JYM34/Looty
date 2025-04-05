@@ -2,15 +2,24 @@
 
 const express = require("express");
 const router = express.Router();
-const authGuard = require("../Middlewares/authGuard"); // 🔐 Auth middleware
+const authGuard = require("../Middlewares/authGuard");
 const { getGuildConfig, setGuildConfig } = require("../Utils/db"); // 💾 Base JSON
 
-// 🧭 Route GET /dashboard → liste des serveurs gérables par l'utilisateur
-router.get("/", authGuard, (req, res) => {
+const fs = require("fs");
+const path = require("path");
+const { log } = require("console");
+
+// 📂 Fichier partagé entre le dashboard et le bot
+const channelsFilePath = path.join(__dirname, "../../shared/guilds.json");
+
+// 📊 GET /dashboard → Liste des serveurs gérables par l'utilisateur
+router.get("/", authGuard, async (req, res) => {
   const user = req.user;
 
-  // 🎯 On filtre les serveurs où l'utilisateur a MANAGE_GUILD (0x20)
-  const managedGuilds = user.guilds.filter(g => (g.permissions & 0x20) === 0x20);
+  // 🔍 On filtre les serveurs où l'utilisateur a MANAGE_GUILD (0x20)
+  const managedGuilds = user.guilds.filter(g =>
+    (g.permissions & 0x20) === 0x20
+  );
 
   res.render("dashboard", {
     user,
@@ -18,62 +27,77 @@ router.get("/", authGuard, (req, res) => {
   });
 });
 
-// ⚙️ Route GET /dashboard/:guildId → affichage de la config du serveur
+// ⚙️ GET /dashboard/:guildId → Page de config d’un serveur
 router.get("/:guildId", authGuard, async (req, res) => {
   const user = req.user;
   const guildId = req.params.guildId;
+
+  // 📦 Lecture config personnalisée (ex: prefix/modération)
   const config = await getGuildConfig(guildId);
 
+  // ✅ Vérifie si l'utilisateur a accès à ce serveur
   const guild = user.guilds.find(g => g.id === guildId);
   if (!guild) return res.redirect("/dashboard");
 
-  // ✅ Récupération du serveur dans le cache du bot
+  // 🔎 Est-ce que le bot est présent dans ce serveur ?
   const guildInCache = req.client.guilds.cache.get(guildId);
 
-  let groupedChannels = {};
+  // 📺 On regroupe les salons textuels par catégorie
+  const groupedChannels = {};
 
   if (guildInCache) {
-    const textChannels = guildInCache.channels.cache
-      .filter(c => c.type === 0 && c.viewable); // texte + visible
-
-    textChannels.forEach(channel => {
-      const parent = channel.parent || { id: "none", name: "📁 Sans catégorie" };
-      if (!groupedChannels[parent.id]) {
-        groupedChannels[parent.id] = {
-          name: parent.name,
-          channels: []
-        };
-      }
-      groupedChannels[parent.id].channels.push({
-        id: channel.id,
-        name: channel.name
+    guildInCache.channels.cache
+      .filter(c => c.type === 0) // 🧵 GUILD_TEXT uniquement
+      .forEach(channel => {
+        const category = channel.parent?.name || "Sans catégorie";
+        if (!groupedChannels[category]) groupedChannels[category] = [];
+        groupedChannels[category].push({ id: channel.id, name: channel.name });
       });
-    });
   }
 
   res.render("guild-dashboard", {
     user,
     guild,
     config,
-    groupedChannels
+    groupedChannels // ✅ Pour optgroup côté EJS
   });
 });
 
-// 💾 Route POST /dashboard/:guildId → enregistre la config
+// 💾 POST /dashboard/:guildId → Enregistre les salons sélectionnés dans shared/channels.json
 router.post("/:guildId", authGuard, async (req, res) => {
   const guildId = req.params.guildId;
   const form = req.body;
 
-  // 💾 Nouvelle configuration à sauvegarder
-  const newConfig = {
+  // ✅ Lecture de l’ancien fichier
+  let raw = "{}";
+  if (fs.existsSync(channelsFilePath)) {
+    raw = fs.readFileSync(channelsFilePath, "utf8");
+  }
+
+  const channelsJson = JSON.parse(raw);
+  console.log(channelsJson);
+
+ // if (!channelsJson.id) channelsJson.id = {};
+  //channelsJson.id = guildId;
+
+  // 🔄 Écriture des nouveaux salons dans la bonne clé
+  channelsJson[guildId] = {
     prefix: form.prefix || "!",
     moderation: form.moderation === "true",
-    epicChannel: form.epicChannel,
-    epicComingSoonChannel: form.epicComingSoonChannel,
-    epicLogsChannel: form.epicLogsChannel
+    currentGamesChannelId: form.epicChannel,
+    nextGamesChannelId: form.epicComingSoonChannel,
+    logsChannelId: form.epicLogsChannel
   };
 
-  await setGuildConfig(guildId, newConfig);
+  // 💾 Sauvegarde dans le fichier partagé
+  fs.writeFileSync(
+    channelsFilePath,
+    JSON.stringify(channelsJson, null, 2),
+    "utf8"
+  );
+
+  console.log(`✅ Synchro enregistrée dans shared/guilds.json pour ${guildId}`);
+
   res.redirect(`/dashboard/${guildId}`);
 });
 

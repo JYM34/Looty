@@ -1,7 +1,7 @@
 // 📦 Imports nécessaires
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js"); // Pour créer une slash command
 const sendEmbeds = require("../Modules/epic/sendEmbeds");                          // Fonction d’envoi des jeux Epic Games
-const channels = require("../../shared/channels.json");                     // Config des salons
+const channels = require("../../shared/guilds.json");                     // Config des salons
 
 module.exports = {
   // 🧩 Définition de la commande /epic
