@@ -79,7 +79,6 @@ router.post("/:guildId", authGuard, async (req, res) => {
   }
 
   const channelsJson = JSON.parse(raw);
-  log.debug("/var/www/Looty/web/Routes/dashboard.js : ", JSON.stringify(channelsJson, null, 2));
 
   // 🧠 On récupère le nom de la guilde si le bot y est encore
   const guild = req.client.guilds.cache.get(guildId);
@@ -101,6 +100,8 @@ router.post("/:guildId", authGuard, async (req, res) => {
     JSON.stringify(channelsJson, null, 2),
     "utf8"
   );
+  
+  log.debug("/var/www/Looty/web/Routes/dashboard.js : ", JSON.stringify(channelsJson, null, 2));
 
   log.success(`Synchro enregistrée dans shared/guilds.json pour ${guildId}`);
 

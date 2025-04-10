@@ -65,16 +65,50 @@ async function sendDiscordLog(client, interaction, channelId) {
       return;
     }
 
+    log.debug(`✅ Salon récupéré : `,`${channel.name} (${channel.id})`);
+
+    if (!channel.isTextBased()) {
+      log.warn(`⚠️ Salon non textuel ou invalide : ${channelId}`);
+      return;
+    }
+
+    log.debug(`🔍 Vérification de la présence du bot dans la guilde...`);
     const me = channel.guild.members.me;
+
+    if (!me) {
+      log.warn(`⚠️ Impossible de récupérer le membre bot dans la guilde ${channel.guild.id}`);
+      return;
+    }
+
+    log.debug(`✅ Bot trouvé dans la guilde : ${channel.guild.name} (${channel.guild.id})`);
+
     const perms = channel.permissionsFor(me);
+    if (!perms) {
+      log.warn(`⚠️ Impossible d'obtenir les permissions du bot dans le salon ${channel.id}`);
+      return;
+    }
+
+    log.debug(`🔍 Vérification de la permission 'SendMessages'...`);
+    
     if (!perms?.has("SendMessages")) {
-      log.warn("⚠️  Pas la permission d'envoyer des messages dans le salon log.");
+      log.warn("⚠️  Pas la permission d'envoyer des messages dans le salon log.",`${channel.id}`);
+      return;
+    }
+
+    log.debug(`📨 Envoi du message de log dans le salon ${channel.name}...`);
+    if (!perms.has("ViewChannel")) {
+      log.warn(`⚠️ Le bot ne peut pas voir le salon ${channel.id}`);
+      return;
+    }
+    
+    if (!perms.has("ReadMessageHistory")) {
+      log.warn(`⚠️ Le bot ne peut pas lire l'historique du salon ${channel.id}`);
       return;
     }
 
     await channel.send(`📥 ${interaction.user.tag} a utilisé la commande \`/${interaction.commandName}\``);
     log.debug(`📡 Log envoyé vers salon ${channel.name} (${channel.id}) dans la guilde ${channel.guild.name}`);
   } catch (err) {
-    log.error(`❌ Erreur log salon : ${err.message}`);
+    log.error(`Erreur log salon : `,`${err.message}`);
   }
 }
