@@ -18,3 +18,5 @@ Thumbs.db
 
 # npm lockfile (optionnel)
 # package-lock.json
+
+shared/guilds.json
