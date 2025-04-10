@@ -52,20 +52,20 @@ Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu po
 
 ## 🔧 Configuration
 
-### Fichier `shared/channels.json`
+### Fichier `shared/guilds.json`
 
 Définir les IDs de salons utilisés pour Epic Games :
 
 ```json
-{
-  "epicGames": {
-    "currentGamesChannelId": "ID_DU_SALON_ACTUEL",
-    "nextGamesChannelId": "ID_DU_SALON_PROCHAIN"
-  },
-  "moderation": {
-    "logChannel": "ID_DU_SALON_LOG"
+  "ID_DU_SERVEUR_ACTUEL": {
+    "name": "NOM_DU_SERVEUR",
+    "prefix": "!",
+    "moderation": false,
+    "currentGamesChannelId": "ID_DU_SALON_JEU_GRATUIT",
+    "nextGamesChannelId": "ID_DU_SALON_PROCHAIN_JEU_GRATUIT",
+    "logsChannelId": "ID_DU_SALON_LOG"
   }
-}
+
 ```
 
 ---
