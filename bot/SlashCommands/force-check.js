@@ -54,6 +54,7 @@ module.exports = {
       updateStatus(client, end);
 
       await interaction.editReply("✅ Vérification Epic Games forcée !");
+      
     } catch (err) {
       log.error("Erreur /force-check :", err);
       await interaction.editReply("❌ Une erreur est survenue pendant l’exécution de la commande.");

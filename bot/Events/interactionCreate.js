@@ -1,4 +1,4 @@
-const { InteractionType } = require("discord.js");
+const { InteractionType, EmbedBuilder } = require("discord.js");
 require("dotenv").config();
 
 module.exports = {
@@ -106,7 +106,15 @@ async function sendDiscordLog(client, interaction, channelId) {
       return;
     }
 
-    await channel.send(`📥 ${interaction.user.tag} a utilisé la commande \`/${interaction.commandName}\``);
+      const embed = new EmbedBuilder()
+      .setColor(0x2f3136)
+      .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL({ size: 1024 }) })
+      .setDescription(`▶️ Utilisation de la commande \`/${interaction.commandName}\``)
+      .setTimestamp()
+      .setFooter({ text: `Effectué par : ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL({ size: 1024 }) });
+
+    await channel.send({ embeds: [embed] });
+
     log.debug(`📡 Log envoyé vers salon ${channel.name} (${channel.id}) dans la guilde ${channel.guild.name}`);
   } catch (err) {
     log.error(`Erreur log salon : `,`${err.message}`);
