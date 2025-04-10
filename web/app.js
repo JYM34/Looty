@@ -48,6 +48,6 @@ module.exports = (client) => {
 
   // 🚀 Lancement du dashboard
   app.listen(3000, () => {
-    console.log("🌐 Dashboard en ligne : http://localhost:3000");
+    log.success("🌐 Dashboard en ligne : ","http://localhost:3000");
   });
 };

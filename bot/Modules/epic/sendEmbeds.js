@@ -28,9 +28,9 @@ async function clearChannelMessages(client, channel) {
   } catch (err) {
     // 👇 Ignore juste l’erreur "Unknown Message" pour éviter le spam
     if (err.code === 10008) {
-      log.warn(`⚠️ Tentative de suppression échouée : message inconnu (probablement déjà supprimé)`);
+      log.warn(`Tentative de suppression échouée : message inconnu (probablement déjà supprimé)`);
     } else {
-      log.error(`❌ Erreur nettoyage de #${channel.name} : ${err.message}`);
+      log.error(`Erreur nettoyage de #${channel.name} : `,`${err.message}`);
     }
   }
 }
@@ -97,7 +97,7 @@ module.exports = async function sendEpicGamesEmbed(client, currentChannelId, nex
         components: game.status === "currentGames" ? [row] : []
       });
     } catch (err) {
-      console.error(`❌ Erreur d’envoi pour ${game.title} : ${err.message}`);
+      log.error(`Erreur d’envoi pour ${game.title} : `,`${err.message}`);
     }
   }
 

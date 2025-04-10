@@ -19,9 +19,9 @@ module.exports = {
             defaultChannel.send({ embeds: [embed] });
         }
   
-        console.log(`✅ Nouveau serveur ajouté : ${guild.name}`);
+        log.error(`✅ Nouveau serveur ajouté : `, guild.name);
       } catch (error) {
-        console.error(`❌ Erreur lors du message de bienvenue :`, error);
+        log.error(`❌ Erreur lors du message de bienvenue :`, error);
       }
     }
   };

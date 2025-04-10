@@ -7,7 +7,7 @@ const { getGuildConfig, setGuildConfig } = require("../Utils/db"); // 💾 Base 
 
 const fs = require("fs");
 const path = require("path");
-const { log } = require("console");
+//const { log } = require("console");
 
 // 📂 Fichier partagé entre le dashboard et le bot
 const channelsFilePath = path.join(__dirname, "../../shared/guilds.json");
@@ -79,7 +79,7 @@ router.post("/:guildId", authGuard, async (req, res) => {
   }
 
   const channelsJson = JSON.parse(raw);
-  console.log(channelsJson);
+  log.debug("/var/www/Looty/web/Routes/dashboard.js : ", JSON.stringify(channelsJson, null, 2));
 
   // 🧠 On récupère le nom de la guilde si le bot y est encore
   const guild = req.client.guilds.cache.get(guildId);
@@ -102,7 +102,7 @@ router.post("/:guildId", authGuard, async (req, res) => {
     "utf8"
   );
 
-  console.log(`✅ Synchro enregistrée dans shared/guilds.json pour ${guildId}`);
+  log.success(`Synchro enregistrée dans shared/guilds.json pour ${guildId}`);
 
   res.redirect(`/dashboard/${guildId}`);
 });

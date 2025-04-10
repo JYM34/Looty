@@ -9,7 +9,7 @@ module.exports = client => {
 
     // 🛡️ Vérifie que le dossier existe
     if (!existsSync(eventsPath)) {
-        log.warn(`${config.YELLOW}[WARN] Dossier 'Events' introuvable.${config.WHITE}`);
+        log.warn(`${config.YELLOW} Dossier 'Events' introuvable.${config.WHITE}`);
         return;
     }
 
@@ -30,7 +30,7 @@ module.exports = client => {
 
                     log.success(`${config.BLUE}Événement ${config.GREEN}${file.replace('.js', '')}${config.WHITE} chargé avec succès.`);
                 } else {
-                    log.warn(`${config.YELLOW}⚠️ Le fichier ${file} ne contient pas un événement valide.${config.WHITE}`);
+                    log.warn(`${config.YELLOW} Le fichier ${file} ne contient pas un événement valide.${config.WHITE}`);
                 }
             } catch (err) {
                 log.error(`${config.RED}Erreur lors du chargement de ${file} : ${err.message}${config.WHITE}`);

@@ -54,7 +54,7 @@
       <% if (!user) { %>
         <!-- 🔓 Public -->
         <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">🏠 Accueil</a>
-        <a href="/auth/login">🔑 Connexion</a>
+        <a href="/auth/login?state=returnToDashboard">🔑 Connexion</a>
         <a href="/invite">➕ Ajouter le bot</a>
       <% } else { %>
         <!-- 🔐 Privé -->

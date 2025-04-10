@@ -24,7 +24,7 @@ function TestFile() {
     })
 }
 function WriteFile() {
-    var localDateTime = new Date().toLocaleString("fr-FR", {timeZone: "Europe/Paris"})  
+
     fs.writeFile('./games.json', '[]', (err) => {
         if (err) {
             log.success(`${config.RED}ERREUR : Initialisation imposible${config.WHITE}`)
@@ -36,7 +36,7 @@ function WriteFile() {
 }
 
 function SaveFile(obj) {
-    var localDateTime = new Date().toLocaleString("fr-FR", {timeZone: "Europe/Paris"})
+
     fs.writeFile('./games.json', obj, (err) => {
         if (err) {
             log.success('writeFile ==> '+err)

@@ -32,12 +32,12 @@ module.exports = {
       await interaction.editReply("🎉 Jeux envoyés dans les salons configurés !");
     } catch (err) {
       // ❌ Gestion des erreurs API ou embed
-      console.error("❌ Erreur commande /epic :", err);
+      log.error("Erreur commande /epic :", err);
 
       try {
         await interaction.editReply("❌ Une erreur est survenue pendant l’envoi.");
       } catch (editErr) {
-        console.error("❌ Erreur lors de l'editReply :", editErr);
+        log.error("Erreur lors de l'editReply :", editErr);
       }
     }
   }

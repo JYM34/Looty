@@ -12,14 +12,14 @@ module.exports = async client => {
     const commandsPath = path.join(__dirname, '..', 'SlashCommands');
 
     if (!existsSync(commandsPath)) {
-        log.warn(`⚠️ Dossier 'SlashCommands' introuvable.`);
+        log.warn(`Dossier 'SlashCommands' introuvable.`);
         return;
     }
 
     const commandFiles = readdirSync(commandsPath).filter(file => file.endsWith('.js'));
 
     if (commandFiles.length === 0) {
-        log.warn(`⚠️ Aucune commande trouvée dans SlashCommands.`);
+        log.warn(`Aucune commande trouvée dans SlashCommands.`);
     }
 
     for (const file of commandFiles) {
@@ -34,9 +34,9 @@ module.exports = async client => {
             commands.push(command.data.toJSON());
             client.commands.set(command.data.name, command);
 
-            log.success(`${config.BLUE}✅ Commande ${config.GREEN}${file.replace('.js', '')}${config.WHITE} chargée.`);
+            log.success(`${config.BLUE} Commande ${config.GREEN}${file.replace('.js', '')}${config.WHITE} chargée.`);
         } catch (error) {
-            log.error(`❌ Erreur chargement ${file} :`, error);
+            log.error(`Erreur chargement ${file} :`, error);
         }
     }
 
@@ -44,14 +44,14 @@ module.exports = async client => {
     const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
     try {
-        log.success(`🔄 Mise à jour des commandes (API Discord)...`);
+        log.maj(`Mise à jour des commandes (API Discord)...`);
         await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID), // Pour guild uniquement
             { body: commands }
         );
-        log.success(`✅ Commandes enregistrées avec succès.`);
+        log.success(`Commandes enregistrées avec succès.`);
     } catch (error) {
-        log.error(`❌ Échec de l'enregistrement des commandes :`, error);
+        log.error(`Échec de l'enregistrement des commandes :`, error);
     }
 
     return commands;

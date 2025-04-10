@@ -25,10 +25,10 @@ function sanitizeGame(game) {
   };
 
   // 🛑 Log des incohérences de parsing
-  if (!cleaned.effectiveDate) log.warn(`⚠️ Date de début invalide pour "${game.title}"`);
-  if (!cleaned.expiryDate) log.warn(`⚠️ Date de fin invalide pour "${game.title}"`);
-  if (cleaned.price === null) log.warn(`⚠️ Prix original non numérique pour "${game.title}"`);
-  if (cleaned.promoPrice === null) log.warn(`⚠️ Prix promo non numérique pour "${game.title}"`);
+  if (!cleaned.effectiveDate) log.warn(`Date de début invalide pour "${game.title}"`);
+  if (!cleaned.expiryDate) log.warn(`Date de fin invalide pour "${game.title}"`);
+  if (cleaned.price === null) log.warn(`Prix original non numérique pour "${game.title}"`);
+  if (cleaned.promoPrice === null) log.warn(`Prix promo non numérique pour "${game.title}"`);
 
   return cleaned;
 }

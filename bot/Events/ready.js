@@ -14,7 +14,8 @@ module.exports = {
    */
   async execute(client) {
     // ✅ Affichage dans le terminal que le bot est bien prêt
-    log.success(`✅ ${config.GREEN}Bot opérationnel !${config.WHITE}`);
+    log.success(`Bot opérationnel !`);
+    log.debug(`Mode developpement `, `activé`)
 
     // 🚀 Lancement de la logique Epic Games (embed + statut)
     scheduler(client);

@@ -40,7 +40,7 @@ module.exports = {
       // ▶️ Exécution de la commande
       await command.run(client, interaction);
     } catch (error) {
-      log.error(`💥 Erreur lors de l'exécution de /${interaction.commandName} : ${error.message}`);
+      log.error(`💥 Erreur lors de l'exécution de /${interaction.commandName} : `, error.message);
       await interaction.reply({
         content: "❌ Une erreur est survenue pendant la commande.",
         ephemeral: true,

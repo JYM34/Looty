@@ -17,7 +17,7 @@ module.exports = async function scheduleTask(client) {
 
   // 🚫 Si aucun jeu gratuit dispo, on log et on quitte la fonction
   if (!currentGames.length) {
-    log.warn("⚠️ Aucun jeu gratuit Epic trouvé.");
+    log.warn("Aucun jeu gratuit Epic trouvé.");
     return;
   }
 
@@ -28,7 +28,7 @@ module.exports = async function scheduleTask(client) {
 
   // ⏳ Si on a un délai positif, on programme un nouvel envoi à la fin de l'offre
   if (delay > 0) {
-    log.info(`⏱️ Prochaine vérif dans ${Math.round(delay / 1000)} sec (+1min).`);
+    log.timer(`Prochaine vérif dans `,`${Math.round(delay / 1000)} sec (+1min).`);
 
     setTimeout(async () => {
       // 📥 Import dynamique pour éviter une boucle de dépendance
@@ -43,7 +43,7 @@ module.exports = async function scheduleTask(client) {
       // 📤 Envoie des jeux dans les salons configurés
       await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);
 
-      log.success("🎉 Jeux Epic envoyés !");
+      log.success("Jeux Epic envoyés !");
 
       // 🔁 Relance la planification pour continuer en boucle
       scheduleTask(client);

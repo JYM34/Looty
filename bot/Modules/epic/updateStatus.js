@@ -8,23 +8,36 @@ const formatTimeLeft = require("../../Fonctions/formatTimeLeft");
  */
 module.exports = function updateBotStatus(client, endTimestamp) {
 
-  /**
-   * ⏰ Met à jour le statut visible du bot
-   */
-  function refresh() {
-    const now = Date.now();
-    const diff = endTimestamp - now;
+// 🔁 Variable pour stocker le dernier statut affiché
+let lastStatus = "";
 
-    if (diff <= 0) {
-      // ✅ Promo terminée : affiche un message générique
-      client.user.setActivity("⏳ Nouveau jeu dispo !", { type: ActivityType.Custom });
-      return;
-    }
+/**
+ * ⏰ Met à jour le statut visible du bot Epic Games
+ */
+function refresh() {
+  const now = Date.now();                      // ⌚ Timestamp actuel
+  const diff = endTimestamp - now;             // ⌛ Temps restant avant la fin de la promo
 
-    // 📆 Format "Xj HHh MMmn"
+  let newStatus;
+
+  if (diff <= 0) {
+    // ✅ Si la promo est terminée, message générique
+    newStatus = "⏳ Nouveau jeu dispo !";
+  } else if (diff < 10_000) {
+    // ⚠️ Si on est à moins de 10 secondes de la fin, on n'affiche rien pour éviter un switch rapide
+    return;
+  } else {
+    // 🗓️ Sinon, on affiche le temps restant
     const formatted = formatTimeLeft(diff);
-    client.user.setActivity(`⏳ Prochain jeu : ${formatted}`, { type: ActivityType.Custom });
+    newStatus = `⏳ Prochain jeu : ${formatted}`;
   }
+
+  // ✅ Met à jour le statut uniquement si le message a changé
+  if (newStatus !== lastStatus) {
+    client.user.setActivity(newStatus, { type: ActivityType.Custom });
+    lastStatus = newStatus; // 📝 On stocke le statut actuel pour comparaison future
+  }
+}
 
   /**
    * 🖥️ Log console toutes les heures
