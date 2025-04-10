@@ -1,6 +1,3 @@
-// 📦 Importe la configuration globale (couleurs console, etc.)
-const config = require("../config");
-
 // ⏱️ Fonction centrale pour planifier l'envoi des jeux Epic + mise à jour de statut
 const scheduler = require("../Modules/epic/scheduler");
 
@@ -15,7 +12,12 @@ module.exports = {
   async execute(client) {
     // ✅ Affichage dans le terminal que le bot est bien prêt
     log.success(`Bot opérationnel !`);
-    log.debug(`Mode developpement `, `activé`)
+    if(config.APP_ENVIRONMENTS === 'debug') {
+      log.debug(`Mode ${config.APP_ENVIRONMENTS} `, `activé`)
+    }
+    else {
+      log.info(`Mode ${config.APP_ENVIRONMENTS} `, `activé`)
+    }
 
     // 🚀 Lancement de la logique Epic Games (embed + statut)
     scheduler(client);

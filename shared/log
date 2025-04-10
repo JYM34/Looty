@@ -1,39 +1,70 @@
-const config = require('../bot/config');
+const config = require('./config');
 
-// 🔧 Formatage d'horodatage FR
+// 🕒 Horodatage en FR (Europe/Paris)
 const now = () => new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
 
-// 📦 Récupère le mode d’environnement (par défaut: développement)
-const isDev = config.NODE_ENV !== "production";
+// 🔁 Niveau d’environnement courant
+const currentEnv = config.APP_ENVIRONMENTS;
+
+// 🎚️ Niveaux de logs autorisés par environnement
+const LOG_LEVELS = {
+  debug:      ["debug", "info", "success", "maj", "timer", "warn", "error"],
+  development: ["info", "success", "maj", "timer", "warn", "error"],
+  production:  ["success", "warn", "error"]
+};
+
+/**
+ * ✅ Vérifie si un type de log est autorisé dans l’environnement courant
+ * @param {string} level - Type de log à afficher
+ * @returns {boolean}
+ */
+function shouldLog(level) {
+  return LOG_LEVELS[currentEnv]?.includes(level);
+}
+
+/**
+ * 💬 Fonction de log colorée et timestampée
+ * @param {"log" | "warn" | "error"} type - Type de console
+ * @param {string} emoji
+ * @param {string} color
+ * @param {string} levelName - Niveau logique (debug, info, etc.)
+ * @param {string} message
+ * @param {string} [message2]
+ */
+function log(type, emoji, color, levelName, message, message2 = "") {
+  if (!shouldLog(levelName)) return;
+  const timestamp = `${config.WHITE}${now()} : ${emoji} ${color}${message}${config.WHITE}${message2}`;
+  console[type](timestamp);
+}
 
 module.exports = {
-    debug(message, message2 = "") {
-        if (isDev) {
-            console.log(`${config.WHITE}${now()} : 🐞 ${config.BLUE}${message}${config.WHITE}${message2}`);
-        }
-    },
+  debug(message, message2 = "") {
+    log("log", "🐞", config.BLUE, "debug", message, message2);
+  },
 
-    success(message, message2 = "") {
-        console.log(`${config.WHITE}${now()} : ✅ ${config.GREEN}${message}${config.WHITE}${message2}`);
-    },
+  info(message, message2 = "") {
+    log("log", "ℹ️ ", config.BLUE, "info", message, message2);
+  },
 
-    maj(message, message2 = "") {
-        console.log(`${config.WHITE}${now()} : 🔄 ${config.GREEN}${message}${config.WHITE}${message2}`);
-    },
+  success(message, message2 = "") {
+    log("log", "✅", config.GREEN, "success", message, message2);
+  },
 
-    timer(message, message2 = "") {
-        console.log(`${config.WHITE}${now()} : ⌛ ${config.WHITE}${message}${config.BLUE}${message2}${config.WHITE}`);
-    },
+  maj(message, message2 = "") {
+    log("log", "🔄", config.GREEN, "maj", message, message2);
+  },
 
-    info(message, message2 = "") {
-        console.log(`${config.WHITE}${now()} : ℹ️ ${config.BLUE}${message}${config.WHITE}${message2}`);
-    },
+  timer(message, message2 = "") {
+    log("log", "⌛", config.BLUE, "timer", message, message2);
+  },
 
-    warn(message, message2 = "") {
-        console.warn(`${config.WHITE}${now()} : ⚠️ ${config.RED} ${message}${config.WHITE}${message2}`);
-    },
+  warn(message, message2 = "") {
+    log("warn", "⚠️", config.RED, "warn", message, message2);
+  },
 
-    error(message, err) {
-        console.error(`${config.WHITE}${now()} : ❌ ${config.RED} ${message}${config.WHITE}${err}`);
-    }
+  error(message, err) {
+    if (!shouldLog("error")) return;
+    const timestamp = `${config.WHITE}${now()} : ❌ ${config.RED}${message}${config.WHITE}`;
+    console.error(timestamp, err);
+  }
 };

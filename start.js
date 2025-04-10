@@ -3,7 +3,7 @@
 require("dotenv").config(); // 🌍 .env au tout début
 
 global.log = require("./shared/log");
-const config = require("./bot/config");
+global.config = require("./shared/config");
 const client = require("./bot/client");
 const loadCommands = require("./bot/Loaders/loadCommands");
 const loadEvents = require("./bot/Loaders/loadEvents");
@@ -20,7 +20,7 @@ const loadEvents = require("./bot/Loaders/loadEvents");
 
     client.once("ready", () => {
       log.success(`${config.PINK}-------------------------${config.WHITE}`);
-      log.success(`${config.GREEN} 🌐 Connecté en tant que ${config.BLUE}${client.user.username}${config.WHITE}`);
+      log.success(`${config.GREEN}🌐 Connecté en tant que ${config.BLUE}${client.user.username}${config.WHITE}`);
       log.success(`${config.PINK}-------------------------${config.WHITE}`);
     });
 

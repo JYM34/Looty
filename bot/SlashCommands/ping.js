@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
-const config = require("../config");
 
 module.exports = {
     showHelp: true,
