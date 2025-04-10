@@ -24,7 +24,18 @@ module.exports = {
 
     try {
       // 📥 Log dans un salon spécifique (si configuré)
-      await sendDiscordLog(client, interaction, process.env.LOG_CHANNEL_ID);
+      const guildConfigs = require("../../shared/guilds.json"); // adapte le chemin si besoin
+
+      const guildId = interaction.guild?.id;
+      const logChannelId = guildConfigs[guildId]?.logsChannelId;
+      
+      if (!logChannelId) {
+        log.warn(` Aucun salon log configuré pour le channel ${logChannelId}`);
+        log.warn(` Aucun salon log configuré pour la guilde ${guildId}`);
+        return;
+      }
+      
+      await sendDiscordLog(client, interaction, logChannelId);
 
       // ▶️ Exécution de la commande
       await command.run(client, interaction);
@@ -57,11 +68,12 @@ async function sendDiscordLog(client, interaction, channelId) {
     const me = channel.guild.members.me;
     const perms = channel.permissionsFor(me);
     if (!perms?.has("SendMessages")) {
-      log.warn("⚠️ Pas la permission d'envoyer des messages dans le salon log.");
+      log.warn("⚠️  Pas la permission d'envoyer des messages dans le salon log.");
       return;
     }
 
     await channel.send(`📥 ${interaction.user.tag} a utilisé la commande \`/${interaction.commandName}\``);
+    log.debug(`📡 Log envoyé vers salon ${channel.name} (${channel.id}) dans la guilde ${channel.guild.name}`);
   } catch (err) {
     log.error(`❌ Erreur log salon : ${err.message}`);
   }

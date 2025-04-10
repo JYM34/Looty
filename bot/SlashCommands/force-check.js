@@ -1,52 +1,62 @@
 // 📦 Imports nécessaires
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");  // Builder pour créer une slash command
-const sendEmbeds = require("../Modules/epic/sendEmbeds");                    // Envoie les jeux Epic en embed
-const updateStatus = require("../Modules/epic/updateStatus");                // Met à jour le statut du bot
-const { getEpicFreeGames } = require("epic-games-free");                     // Récupère les jeux gratuits Epic
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const sendEmbeds = require("../Modules/epic/sendEmbeds");      // ↗️ Envoi d'embeds dans les salons
+const updateStatus = require("../Modules/epic/updateStatus");  // 🔄 Mise à jour du statut
+const { getEpicFreeGames } = require("epic-games-free");
+const path = require("path");
+const fs = require("fs");
 
 module.exports = {
-  // 🛠️ Définition de la commande /force-check
+  // 🛠️ Définition de la commande slash
   data: new SlashCommandBuilder()
     .setName("force-check")
     .setDescription("🔁 Force l’envoi immédiat des jeux Epic Games")
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator), // Réservée aux admins
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   /**
-   * ▶️ Fonction exécutée quand on utilise la commande /force-check
+   * ▶️ Fonction exécutée quand on utilise /force-check
    * @param {import('discord.js').Client} client - Instance du bot
-   * @param {import('discord.js').ChatInputCommandInteraction} interaction - Interaction Discord reçue
+   * @param {import('discord.js').ChatInputCommandInteraction} interaction - Interaction reçue
    */
   async run(client, interaction) {
     try {
-      // ⏳ On répond de façon différée pour éviter le timeout (éphémère = visible que par l'utilisateur)
-      await interaction.deferReply({ flags: 64 }); // 64 = Interaction ephemeral
+      // ⏳ On répond de façon différée (éphémère = visible uniquement par l’admin)
+      await interaction.deferReply({ flags: 64 });
 
-      // 📥 Récupération des salons à partir de la config
-      const channels = require("../../shared/guilds.json");
       const guildId = interaction.guildId;
-      const currentGamesChannelId = channels[guildId].currentGamesChannelId;
-      const nextGamesChannelId = channels[guildId].nextGamesChannelId;
 
-      // 📡 Appel de l'API pour obtenir les jeux gratuits actuels
-      const { currentGames } = await getEpicFreeGames();
+      // 📖 On lit dynamiquement la config la plus récente
+      const configPath = path.join(__dirname, "../../shared/guilds.json");
+      const configs = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
-      // 📤 Envoie des jeux dans les salons configurés
-      console.log("sendEmbeds ",guildId, currentGamesChannelId, nextGamesChannelId)
-      await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId);
-
-      // 🕹️ Mise à jour du statut si on a bien un jeu en cours
-      if (currentGames?.[0]) {
-        const end = new Date(currentGames[0].expiryDate).getTime() + 60_000; // On ajoute une marge de sécurité
-        log.info("⌛ +1min de marge ajoutée avant mise à jour du statut.");
-        updateStatus(client, end);
+      const guildConfig = configs[guildId];
+      if (!guildConfig) {
+        return await interaction.editReply("⚠️ Ce serveur n’a pas encore été configuré via le dashboard.");
       }
 
-      // ✅ Message de confirmation dans Discord
+      const { currentGamesChannelId, nextGamesChannelId } = guildConfig;
+
+      if (!currentGamesChannelId || !nextGamesChannelId) {
+        return await interaction.editReply("⚠️ Les salons Epic Games ne sont pas encore configurés.");
+      }
+
+      // 🎮 On récupère les jeux en cours
+      const { currentGames } = await getEpicFreeGames();
+      if (!currentGames.length) {
+        return await interaction.editReply("❌ Aucun jeu gratuit Epic trouvé pour le moment.");
+      }
+
+      // 📤 Envoi des jeux dans les salons
+      await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId);
+
+      // ✅ Mise à jour du statut (jusqu’à la fin de l’offre du 1er jeu)
+      const end = new Date(currentGames[0].expiryDate).getTime() + 60_000;
+      updateStatus(client, end);
+
       await interaction.editReply("✅ Vérification Epic Games forcée !");
     } catch (err) {
-      // ❌ Gestion propre des erreurs (réponse + log console)
       console.error("❌ Erreur /force-check :", err);
-      await interaction.editReply("❌ Une erreur est survenue pendant l'exécution de la commande.");
+      await interaction.editReply("❌ Une erreur est survenue pendant l’exécution de la commande.");
     }
   }
 };

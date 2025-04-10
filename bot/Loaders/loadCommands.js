@@ -46,7 +46,7 @@ module.exports = async client => {
     try {
         log.success(`🔄 Mise à jour des commandes (API Discord)...`);
         await rest.put(
-            Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID), // Pour guild uniquement
+            Routes.applicationCommands(process.env.CLIENT_ID), // Pour guild uniquement
             { body: commands }
         );
         log.success(`✅ Commandes enregistrées avec succès.`);

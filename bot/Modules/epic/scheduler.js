@@ -7,12 +7,6 @@ const fs = require("fs");
 // const sendEpicGamesEmbed = require("./sendEmbeds"); ❌ causait circular dependency
 const updateStatus = require("./updateStatus"); // Helper safe pour le statut du bot
 
-// 📁 Récupération de la configuration des salons depuis un fichier JSON partagé
-const channelsPath = path.join(__dirname, "../../../shared/guilds.json");
-const { currentGamesChannelId, nextGamesChannelId } = JSON.parse(
-  fs.readFileSync(channelsPath, "utf-8")
-);
-
 /**
  * ⏱️ Planifie l’envoi automatique des jeux gratuits Epic Games + met à jour le statut du bot
  * @param {import('discord.js').Client} client - L’instance du bot Discord
@@ -39,6 +33,12 @@ module.exports = async function scheduleTask(client) {
     setTimeout(async () => {
       // 📥 Import dynamique pour éviter une boucle de dépendance
       const sendEpicGamesEmbed = require("./sendEmbeds");
+
+      // 📁 Récupération de la configuration des salons depuis un fichier JSON partagé
+      const channelsPath = path.join(__dirname, "../../../shared/guilds.json");
+      const { currentGamesChannelId, nextGamesChannelId } = JSON.parse(
+        fs.readFileSync(channelsPath, "utf-8")
+      );
 
       // 📤 Envoie des jeux dans les salons configurés
       await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);

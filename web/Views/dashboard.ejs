@@ -1,31 +1,38 @@
 <% title = "Mes serveurs" %>
 
-<!-- 📂 Liste des serveurs Discord -->
-
 <h1>📂 Dashboard</h1>
 
-<!-- 👤 Info utilisateur -->
 <p>Connecté en tant que <strong><%= user.username %>#<%= user.discriminator %></strong></p>
 
-<!-- 🧾 Liste des guilds -->
 <h2>🧾 Vos serveurs</h2>
 
 <ul style="list-style: none; padding-left: 0;">
-  <% guilds.forEach(guild => { %>
+  <% guilds.forEach(guild => { 
+       const botPresent = guildsInBot.includes(guild.id); // ✅ check si Looty est déjà là
+  %>
     <li style="margin-bottom: 1em; display: flex; align-items: center;">
 
-      <!-- 🖼️ Icône du serveur -->
       <% if (guild.icon) { %>
         <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" width="40" height="40" style="border-radius: 50%; margin-right: 1em;">
       <% } else { %>
         <div style="width: 40px; height: 40px; background: #444; border-radius: 50%; margin-right: 1em;"></div>
       <% } %>
 
-      <!-- 📛 Nom -->
       <span style="flex-grow: 1;"><%= guild.name %></span>
 
-      <!-- 🔧 Bouton config -->
-      <a href="/dashboard/<%= guild.id %>"><button>Configurer</button></a>
+      <% if (botPresent) { %>
+        <!-- ✅ Bot présent -->
+        <a href="/dashboard/<%= guild.id %>"><button>Configurer</button></a>
+      <% } else { %>
+        <!-- ➕ Bot absent : lien d'invitation -->
+        <a 
+          href="https://discord.com/oauth2/authorize?client_id=<%= process.env.CLIENT_ID %>&permissions=274877975552&scope=bot%20applications.commands&guild_id=<%= guild.id %>&disable_guild_select=true"
+          target="_blank"
+        >
+          <button style="background-color: #5865F2; color: white;">➕ Inviter Looty</button>
+        </a>
+      <% } %>
+
     </li>
   <% }) %>
 </ul>

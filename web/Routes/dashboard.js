@@ -21,9 +21,13 @@ router.get("/", authGuard, async (req, res) => {
     (g.permissions & 0x20) === 0x20
   );
 
+   // 🧠 Liste des serveurs où le bot est déjà présent
+   const botGuilds = req.client.guilds.cache.map(g => g.id);
+
   res.render("dashboard", {
     user,
-    guilds: managedGuilds
+    guilds: managedGuilds,
+    guildsInBot: botGuilds
   });
 });
 
@@ -77,11 +81,13 @@ router.post("/:guildId", authGuard, async (req, res) => {
   const channelsJson = JSON.parse(raw);
   console.log(channelsJson);
 
- // if (!channelsJson.id) channelsJson.id = {};
-  //channelsJson.id = guildId;
+  // 🧠 On récupère le nom de la guilde si le bot y est encore
+  const guild = req.client.guilds.cache.get(guildId);
+  const guildName = guild?.name || "Nom inconnu";
 
   // 🔄 Écriture des nouveaux salons dans la bonne clé
   channelsJson[guildId] = {
+    name: guildName,
     prefix: form.prefix || "!",
     moderation: form.moderation === "true",
     currentGamesChannelId: form.epicChannel,

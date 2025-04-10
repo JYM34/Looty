@@ -6,7 +6,11 @@ router.get("/login", passport.authenticate("discord"));
 router.get("/callback", passport.authenticate("discord", {
   failureRedirect: "/"
 }), (req, res) => {
-  res.redirect("/dashboard");
+  const state = req.query.state;
+  if (state === "returnToDashboard") {
+    return res.redirect("/dashboard");
+  }
+  res.redirect("/");
 });
 
 router.get("/logout", (req, res) => {

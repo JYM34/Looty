@@ -4,6 +4,7 @@
   "description": "Bot Discord + dashboard web",
   "main": "bot/index.js",
   "scripts": {
+    "smart-commit": "node node_modules/smart-commit/smartCommit.js",
     "start": "pm2 start start.js --name looty-full",
     "start2": "pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs Looty",
     "looty": "pm2 flush && pm2 delete Looty && pm2 delete eLooty && pm2 start bot/index.js --name Looty && pm2 start web/app.js --name eLooty && clear && pm2 logs Looty",
@@ -17,6 +18,7 @@
     "dotenv": "^16.4.7",
     "ejs": "^3.1.9",
     "epic-games-free": "github:JYM34/EpicGamesFree",
+    "smart-commit": "github:JYM34/SmartCommit",
     "express": "^4.21.2",
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.18.1",

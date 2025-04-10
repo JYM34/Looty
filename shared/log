@@ -17,7 +17,7 @@ module.exports = {
     },
 
     warn(message) {
-        console.warn(`${config.WHITE}${now()} : ${config.YELLOW}⚠ ${message}${config.WHITE}`);
+        console.warn(`${config.WHITE}${now()} : ${config.RED} ⚠ ${message}${config.WHITE}`);
     },
 
     error(message) {

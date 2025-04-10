@@ -21,7 +21,9 @@ module.exports = {
       await interaction.deferReply({ flags: 64 }); // 64 = Interaction ephemeral
 
       // 🛠️ Récupération des IDs de salons depuis la config
-      const { currentGamesChannelId, nextGamesChannelId } = channels.epicGames;
+      const guildId = req.params.guildId;
+      log.error(guildId);
+      const { currentGamesChannelId, nextGamesChannelId } = channels.epicGames[guildId];
 
       // 🚀 Envoi des jeux dans les salons configurés
       await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId);

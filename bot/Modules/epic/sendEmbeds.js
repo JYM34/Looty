@@ -3,6 +3,7 @@ const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle } = require("
 const { getEpicFreeGames } = require("epic-games-free");         // Lib externe
 const formatDate = require("./formatDate");                      // Helper isolé
 const sanitizeGame = require("./sanitizeGame");                  // Helper isolé
+
 /**
  * 🧹 Supprime les anciens messages du bot dans un salon
  * @param {Client} client
@@ -12,15 +13,25 @@ async function clearChannelMessages(client, channel) {
   if (!channel?.isTextBased()) return;
 
   try {
+    // 🔄 Récupère les 100 derniers messages du salon
     const messages = await channel.messages.fetch({ limit: 100 });
+
+    // 🤖 Filtre les messages envoyés par le bot lui-même
     const botMessages = messages.filter(m => m.author.id === client.user.id);
 
+    // ✅ Supprime les messages en bulk (si possible)
     if (botMessages.size > 0) {
-      await channel.bulkDelete(botMessages, true);
-      log.debug(`🧹 ${botMessages.size} message(s) supprimé(s) dans #${channel.name}`);
+      const deleted = await channel.bulkDelete(botMessages, true); // true = ignore messages >14j
+      log.debug(`🧹 ${deleted.size} message(s) supprimé(s) dans #${channel.name}`);
     }
+
   } catch (err) {
-    console.error(`❌ Erreur nettoyage de #${channel.name} : ${err.message}`);
+    // 👇 Ignore juste l’erreur "Unknown Message" pour éviter le spam
+    if (err.code === 10008) {
+      log.warn(`⚠️ Tentative de suppression échouée : message inconnu (probablement déjà supprimé)`);
+    } else {
+      log.error(`❌ Erreur nettoyage de #${channel.name} : ${err.message}`);
+    }
   }
 }
 
