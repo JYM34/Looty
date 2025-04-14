@@ -2,6 +2,12 @@ module.exports = {
     name: "guildCreate",
   
     async execute(guild, client) {
+      // 🛡️ Vérifie si le propriétaire du serveur est un bot
+      const owner = await guild.fetchOwner();
+      if (owner.user.bot) {
+        log.warn(`🚫 Le serveur "${guild.name}" est géré par un autre bot. Aucun message envoyé.`);
+        return;
+      }
       try {
         const defaultChannel =
           guild.systemChannel ||
