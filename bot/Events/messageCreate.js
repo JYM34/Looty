@@ -1,6 +1,6 @@
 // 📁 bot/Events/messageCreate.js
 
-const { getGuildConfig } = require("../../web/Utils/db");
+const { getGuildConfig } = require("../../web/Utils/guildsFile");
 const { handleMessageModeration } = require("../Modules/moderation");
 
 module.exports = {

@@ -27,7 +27,7 @@ module.exports = {
       const guildConfigs = require("../../shared/guilds.json"); // adapte le chemin si besoin
 
       const guildId = interaction.guild?.id;
-      const logChannelId = guildConfigs[guildId]?.logsChannelId;
+      const logChannelId = guildConfigs[guildId]?.epic?.logsChannelId;
       
       if (!logChannelId) {
         log.warn(` Aucun salon log configuré pour le channel ${logChannelId}`);

@@ -29,7 +29,7 @@ module.exports = {
       const configPath = path.join(__dirname, "../../shared/guilds.json");
       const configs = JSON.parse(fs.readFileSync(configPath, "utf8"));
 
-      const guildConfig = configs[guildId];
+      const guildConfig = configs[guildId]?.epic;
       if (!guildConfig) {
         return await interaction.editReply("⚠️ Ce serveur n’a pas encore été configuré via le dashboard.");
       }

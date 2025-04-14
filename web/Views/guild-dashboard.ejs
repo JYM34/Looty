@@ -49,16 +49,38 @@
 <div class="config-block tab-content" id="bloc-epic">
   <h2>📋 Configuration Epic Games</h2>
 
+  <p style="font-size: 0.95em; color: #aaa;">
+    Ces paramètres définissent la région et la langue utilisées pour récupérer les jeux gratuits Epic Games.
+  </p>
+
   <form action="/dashboard/<%= guild.id %>" method="POST">
     <input type="hidden" name="action" value="saveConfig">
 
-    <!-- Sélection du salon pour les jeux actuels -->
+    <!-- 🌍 Pays -->
+    <label for="country">Pays :</label>
+    <% const countries = ["FR", "US", "GB", "DE", "IT", "ES", "BR", "CA", "JP", "RU", "MX", "KR", "AU", "CN", "IN"]; %>
+    <select id="country" name="country" required>
+      <% countries.forEach(code => { %>
+        <option value="<%= code %>" <%= epic.country === code ? "selected" : "" %>><%= code %></option>
+      <% }) %>
+    </select>
+
+    <!-- 🗣️ Langue -->
+    <label for="locale">Langue :</label>
+    <% const locales = ["fr-FR", "en-US", "en-GB", "de-DE", "it-IT", "es-ES", "pt-BR", "ja-JP", "ru-RU", "ko-KR", "zh-CN", "zh-Hant"]; %>
+    <select id="locale" name="locale" required>
+      <% locales.forEach(code => { %>
+        <option value="<%= code %>" <%= epic.locale === code ? "selected" : "" %>><%= code %></option>
+      <% }) %>
+    </select>
+
+    <!-- 🕹️ Salons -->
     <label for="epicChannel">Salon pour les jeux <strong>actuels</strong> :</label>
     <select id="epicChannel" name="epicChannel" required>
       <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
         <optgroup label="<%= groupName %>">
           <% channels.forEach(channel => { %>
-            <option value="<%= channel.id %>" <%= config.currentGamesChannelId === channel.id ? 'selected' : '' %>>
+            <option value="<%= channel.id %>" <%= epic.currentGamesChannelId === channel.id ? "selected" : "" %>>
               #<%= channel.name %>
             </option>
           <% }) %>
@@ -66,13 +88,12 @@
       <% }) %>
     </select>
 
-    <!-- Sélection du salon pour les jeux à venir -->
     <label for="epicComingSoonChannel">Salon pour les jeux <strong>à venir</strong> :</label>
     <select id="epicComingSoonChannel" name="epicComingSoonChannel" required>
       <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
         <optgroup label="<%= groupName %>">
           <% channels.forEach(channel => { %>
-            <option value="<%= channel.id %>" <%= config.nextGamesChannelId === channel.id ? 'selected' : '' %>>
+            <option value="<%= channel.id %>" <%= epic.nextGamesChannelId === channel.id ? "selected" : "" %>>
               #<%= channel.name %>
             </option>
           <% }) %>
@@ -80,13 +101,12 @@
       <% }) %>
     </select>
 
-    <!-- Salon des logs Epic -->
     <label for="epicLogsChannel">Salon des logs Epic :</label>
     <select id="epicLogsChannel" name="epicLogsChannel">
       <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
         <optgroup label="<%= groupName %>">
           <% channels.forEach(channel => { %>
-            <option value="<%= channel.id %>" <%= config.logsChannelId === channel.id ? 'selected' : '' %>>
+            <option value="<%= channel.id %>" <%= epic.logsChannelId === channel.id ? "selected" : "" %>>
               #<%= channel.name %>
             </option>
           <% }) %>
@@ -98,6 +118,7 @@
     <button type="submit">💾 Enregistrer</button>
   </form>
 </div>
+
 
 <!-- 📑 Bloc Infractions -->
 <div class="config-block tab-content" id="bloc-infractions">

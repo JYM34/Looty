@@ -34,4 +34,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+  document.addEventListener("DOMContentLoaded", () => {
+    const epicForm = document.querySelector('#bloc-epic form');
+
+    epicForm.addEventListener("submit", (e) => {
+      const country = document.getElementById("country").value.trim();
+      const locale = document.getElementById("locale").value.trim();
+
+      const allowedCountries = ["FR", "US", "GB", "DE", "IT", "ES", "BR", "CA", "JP", "RU", "MX", "KR", "AU", "CN", "IN"];
+      const allowedLocales = ["fr-FR", "en-US", "en-GB", "de-DE", "it-IT", "es-ES", "pt-BR", "ja-JP", "ru-RU", "ko-KR", "zh-CN", "zh-Hant"];
+
+      // 🔒 Vérifie que les valeurs sont valides
+      if (!allowedCountries.includes(country) || !allowedLocales.includes(locale)) {
+        e.preventDefault(); // empêche l’envoi du formulaire
+
+        alert("❌ Veuillez sélectionner un pays et une langue valides dans les menus déroulants.");
+      }
+    });
+  });
   
