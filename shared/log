@@ -1,70 +1,107 @@
+// ==============================
+//       CUSTOM LOGGER LOOTY
+// ==============================
+
+// 🔧 Chargement de la configuration
 const config = require('./config');
 
-// 🕒 Horodatage en FR (Europe/Paris)
-const now = () => new Date().toLocaleString("fr-FR", { timeZone: "Europe/Paris" });
+// 🕒 Fonction qui retourne la date/heure actuelle formatée en FR (Europe/Paris)
+const now = () => new Date().toLocaleString("fr-FR", {
+  timeZone: "Europe/Paris"
+});
 
-// 🔁 Niveau d’environnement courant
+// 🌍 Environnement courant défini dans la config (ex: development, production)
 const currentEnv = config.APP_ENVIRONMENTS;
 
-// 🎚️ Niveaux de logs autorisés par environnement
+// 🎚️ Définition des niveaux de logs autorisés par environnement
+// Chaque environnement a ses propres niveaux affichables
 const LOG_LEVELS = {
-  debug:      ["debug", "info", "success", "maj", "timer", "warn", "error"],
+  debug:       ["debug", "info", "success", "maj", "timer", "warn", "error"],
   development: ["info", "success", "maj", "timer", "warn", "error"],
   production:  ["success", "warn", "error"]
 };
 
 /**
- * ✅ Vérifie si un type de log est autorisé dans l’environnement courant
- * @param {string} level - Type de log à afficher
- * @returns {boolean}
+ * ✅ Vérifie si un niveau de log donné est autorisé dans l'environnement actuel
+ * @param {string} level - Niveau du log (debug, info, success, etc.)
+ * @returns {boolean} - true si on doit logger, sinon false
  */
 function shouldLog(level) {
   return LOG_LEVELS[currentEnv]?.includes(level);
 }
 
 /**
- * 💬 Fonction de log colorée et timestampée
- * @param {"log" | "warn" | "error"} type - Type de console
- * @param {string} emoji
- * @param {string} color
- * @param {string} levelName - Niveau logique (debug, info, etc.)
- * @param {string} message
- * @param {string} [message2]
+ * 💬 Fonction générique pour afficher les logs dans la console
+ * ➤ Colorée, emoji, timestampée et conditionnée par l'environnement
+ *
+ * @param {"log" | "warn" | "error"} type - Méthode de console à utiliser
+ * @param {string} emoji - Icône du type de log (visuel rapide)
+ * @param {string} color - Code couleur depuis config
+ * @param {string} levelName - Niveau logique du log (pour filtrage env)
+ * @param {string} message - Message principal
+ * @param {string} [message2] - Message secondaire ou complément
  */
 function log(type, emoji, color, levelName, message, message2 = "") {
   if (!shouldLog(levelName)) return;
+
   const timestamp = `${config.WHITE}${now()} : ${emoji} ${color}${message}${config.WHITE}${message2}`;
   console[type](timestamp);
 }
 
+// ==============================
+//       EXPORT DES MÉTHODES
+// ==============================
+
 module.exports = {
+  /**
+   * 🐞 Debug : visible seulement en env "debug"
+   */
   debug(message, message2 = "") {
     log("log", "🐞", config.BLUE, "debug", message, message2);
   },
 
+  /**
+   * ℹ️  Info : pour informations générales
+   */
   info(message, message2 = "") {
     log("log", "ℹ️ ", config.BLUE, "info", message, message2);
   },
 
+  /**
+   * ✅ Success : pour actions réussies (sauvegarde, init, etc.)
+   */
   success(message, message2 = "") {
     log("log", "✅", config.GREEN, "success", message, message2);
   },
 
+  /**
+   * 🔄 MAJ : pour signaler une mise à jour ou un changement
+   */
   maj(message, message2 = "") {
     log("log", "🔄", config.GREEN, "maj", message, message2);
   },
 
+  /**
+   * ⌛ Timer : utile pour afficher des mesures de temps ou de latence
+   */
   timer(message, message2 = "") {
     log("log", "⌛", config.BLUE, "timer", message, message2);
   },
 
+  /**
+   * ⚠️  Avertissement : pour situations non bloquantes mais à surveiller
+   */
   warn(message, message2 = "") {
     log("warn", "⚠️", config.RED, "warn", message, message2);
   },
 
+  /**
+   * ❌ Erreur : pour erreurs critiques, affiche aussi l'objet d'erreur
+   */
   error(message, err) {
     if (!shouldLog("error")) return;
+
     const timestamp = `${config.WHITE}${now()} : ❌ ${config.RED}${message}${config.WHITE}`;
-    console.error(timestamp, err);
+    console.error(timestamp, err); // err peut être un objet, string ou stack
   }
 };
