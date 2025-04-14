@@ -44,7 +44,8 @@ function shouldLog(level) {
 function log(type, emoji, color, levelName, message, message2 = "") {
   if (!shouldLog(levelName)) return;
 
-  const timestamp = `${config.WHITE}${now()} : ${emoji} ${color}${message}${config.WHITE}${message2}`;
+  const format = typeof message2 === "object" ? JSON.stringify(message2, null, 2) : message2;
+  const timestamp = `${config.WHITE}${now()} : ${emoji} ${color}${message}${config.WHITE} ${format}`;
   console[type](timestamp);
 }
 
