@@ -1,105 +1,168 @@
 <% title = "Dashboard – " + guild.name %>
 
-<!-- 🛠️ Configuration du serveur -->
 <h1>🔧 Configuration de <%= guild.name %></h1>
 
-<!-- 👤 Infos de base -->
-<p>ID du serveur : <%= guild.id %></p>
-<p>Connecté en tant que <strong><%= user.username %>#<%= user.discriminator %></strong></p>
+<!-- 👤 Informations sur l'utilisateur connecté -->
+<div class="config-block">
+  <% const isLegacyUser = user.discriminator && user.discriminator !== "0"; %>
+  <p>ID du serveur : <%= guild.id %></p>
+  <p>Connecté en tant que 
+    <strong>
+      <%= isLegacyUser ? `${user.username}#${user.discriminator}` : `@${user.username}` %>
+    </strong>
+  </p>
+</div>
 
-<hr>
+<!-- 🛡️ Bloc Modules / Statut -->
+<div class="config-block tab-content active" id="bloc-modules">
+  <h2>🛡️ Statut des modules</h2>
 
-<!-- 🛡️ Statut des modules -->
-<h2>🛡️ Statut des modules</h2>
-<p>
-  Modération :
-  <% if (config.moderation) { %>
-    <span class="status on">✅ Activé</span>
-  <% } else { %>
-    <span class="status off">❌ Désactivé</span>
-  <% } %>
-</p>
+  <form action="/dashboard/<%= guild.id %>" method="POST">
+    <input type="hidden" name="action" value="saveModules">
 
-<hr>
+    <!-- État actuel du module de modération -->
+    <p>
+      Modération :
+      <% if (config.moderation) { %>
+        <span class="status on">✅ Activé</span>
+      <% } else { %>
+        <span class="status off">❌ Désactivé</span>
+      <% } %>
+    </p>
 
-<!-- 📋 Formulaire de configuration -->
-<form action="/dashboard/<%= guild.id %>" method="POST">
+    <!-- Activation / désactivation de la modération -->
+    <label>
+      <input type="checkbox" name="moderation" value="true" <%= config.moderation ? "checked" : "" %> />
+      Activer le module de modération
+    </label>
 
-  <!-- ✏️ Préfixe du bot -->
-  <label for="prefix">Préfixe du bot :</label>
-  <input
-    type="text"
-    id="prefix"
-    name="prefix"
-    value="<%= config.prefix || '!' %>"
-    maxlength="5"
-    required
-  />
-  <br><br>
+    <!-- Configuration du préfixe -->
+    <label for="prefix">Préfixe du bot :</label>
+    <input id="prefix" type="text" name="prefix" value="<%= config.prefix || '!' %>" maxlength="5" required />
 
-  <!-- ✅ Activation du module de modération -->
-  <label>
-    <input
-      type="checkbox"
-      name="moderation"
-      value="true"
-      <%= config.moderation ? "checked" : "" %>
-    />
-    Activer le module de modération
-  </label>
-  <br><br>
+    <br><br>
+    <button type="submit">💾 Enregistrer</button>
+  </form>
+</div>
 
-  <!-- 🎮 Sélection du salon pour les jeux *actuels* -->
-  <label for="epicChannel">Salon pour les jeux <strong>actuels</strong> :</label>
-  <select id="epicChannel" name="epicChannel" required>
-    <option disabled selected value="">— Choisir un salon —</option>
-    <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
-      <optgroup label="<%= groupName %>">
-        <% channels.forEach(channel => { %>
-          <option value="<%= channel.id %>" <%= config.currentGamesChannelId === channel.id ? 'selected' : '' %>>
-            #<%= channel.name %>
-          </option>
-        <% }) %>
-      </optgroup>
-    <% }) %>
-  </select>
-  <br><br>
+<!-- 📋 Bloc Epic Games -->
+<div class="config-block tab-content" id="bloc-epic">
+  <h2>📋 Configuration Epic Games</h2>
 
-  <!-- ⏳ Sélection du salon pour les jeux *à venir* -->
-  <label for="epicComingSoonChannel">Salon pour les jeux <strong>à venir</strong> :</label>
-  <select id="epicComingSoonChannel" name="epicComingSoonChannel" required>
-    <option disabled selected value="">— Choisir un salon —</option>
-    <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
-      <optgroup label="<%= groupName %>">
-        <% channels.forEach(channel => { %>
-          <option value="<%= channel.id %>" <%= config.nextGamesChannelId === channel.id ? 'selected' : '' %>>
-            #<%= channel.name %>
-          </option>
-        <% }) %>
-      </optgroup>
-    <% }) %>
-  </select>
-  <br><br>
+  <form action="/dashboard/<%= guild.id %>" method="POST">
+    <input type="hidden" name="action" value="saveConfig">
 
-  <!-- 📝 Salon pour les logs Epic -->
-  <label for="epicLogsChannel">Salon des logs Epic :</label>
-  <select id="epicLogsChannel" name="epicLogsChannel">
-    <option value="">— Aucun —</option>
-    <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
-      <optgroup label="<%= groupName %>">
-        <% channels.forEach(channel => { %>
-          <option value="<%= channel.id %>" <%= config.logsChannelId === channel.id ? 'selected' : '' %>>
-            #<%= channel.name %>
-          </option>
-        <% }) %>
-      </optgroup>
-    <% }) %>
-  </select>
-  <br><br>
+    <!-- Sélection du salon pour les jeux actuels -->
+    <label for="epicChannel">Salon pour les jeux <strong>actuels</strong> :</label>
+    <select id="epicChannel" name="epicChannel" required>
+      <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
+        <optgroup label="<%= groupName %>">
+          <% channels.forEach(channel => { %>
+            <option value="<%= channel.id %>" <%= config.currentGamesChannelId === channel.id ? 'selected' : '' %>>
+              #<%= channel.name %>
+            </option>
+          <% }) %>
+        </optgroup>
+      <% }) %>
+    </select>
 
-  <!-- 💾 Enregistrement -->
-  <button type="submit">💾 Enregistrer</button>
-</form>
+    <!-- Sélection du salon pour les jeux à venir -->
+    <label for="epicComingSoonChannel">Salon pour les jeux <strong>à venir</strong> :</label>
+    <select id="epicComingSoonChannel" name="epicComingSoonChannel" required>
+      <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
+        <optgroup label="<%= groupName %>">
+          <% channels.forEach(channel => { %>
+            <option value="<%= channel.id %>" <%= config.nextGamesChannelId === channel.id ? 'selected' : '' %>>
+              #<%= channel.name %>
+            </option>
+          <% }) %>
+        </optgroup>
+      <% }) %>
+    </select>
 
-<!-- 🔙 Retour -->
+    <!-- Salon des logs Epic -->
+    <label for="epicLogsChannel">Salon des logs Epic :</label>
+    <select id="epicLogsChannel" name="epicLogsChannel">
+      <% Object.entries(groupedChannels).forEach(([groupName, channels]) => { %>
+        <optgroup label="<%= groupName %>">
+          <% channels.forEach(channel => { %>
+            <option value="<%= channel.id %>" <%= config.logsChannelId === channel.id ? 'selected' : '' %>>
+              #<%= channel.name %>
+            </option>
+          <% }) %>
+        </optgroup>
+      <% }) %>
+    </select>
+
+    <br><br>
+    <button type="submit">💾 Enregistrer</button>
+  </form>
+</div>
+
+<!-- 📑 Bloc Infractions -->
+<div class="config-block tab-content" id="bloc-infractions">
+  <h2 style="color: #ffc107;">📑 Infractions</h2>
+
+  <!-- Tableau des infractions -->
+  <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+    <thead>
+      <tr style="background-color: #2b2d42; color: #ffffff;">
+        <th style="padding: 10px; text-align: left;">👤 Utilisateur</th>
+        <th style="padding: 10px;">📝 Motif</th>
+        <th style="padding: 10px;">🕒 Date</th>
+        <th style="padding: 10px;">🗑️ Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% Object.entries(enrichedInfractions).forEach(([userId, data]) => {
+           data.entries.forEach((entry, index) => { %>
+        <tr style="background-color: #1e1f2b; border-bottom: 1px solid #333;">
+          <td style="padding: 10px; display: flex; align-items: center; gap: 8px;">
+            <% if (data.avatar) { %>
+              <img src="<%= data.avatar %>" alt="avatar" width="32" height="32" style="border-radius: 50%;">
+            <% } %>
+            <span><strong><%= data.tag %></strong> (<%= userId %>)</span>
+          </td>
+          <td style="text-align: center;"><%= entry.reason %></td>
+          <td style="text-align: center;"><%= new Date(entry.date).toLocaleString('fr-FR') %></td>
+          <td style="text-align: center;">
+            <div style="display: inline-block;">
+              <!-- Suppression d'une infraction -->
+              <form action="/dashboard/<%= guild.id %>" method="POST" style="all: unset; display: inline;">
+                <input type="hidden" name="action" value="deleteInfraction">
+                <input type="hidden" name="userId" value="<%= userId %>">
+                <input type="hidden" name="index" value="<%= index %>">
+                <button type="submit" class="btn-danger">🗑️ Supprimer</button>
+              </form>
+            </div>
+          </td>
+        </tr>
+      <% }) }) %>
+    </tbody>
+  </table>
+
+  <hr style="margin: 20px 0; border-color: #444;">
+
+  <!-- Formulaire d’ajout d’infraction -->
+  <h3 style="color: #61dafb;">➕ Ajouter une infraction</h3>
+
+  <form action="/dashboard/<%= guild.id %>" method="POST" class="inline-form" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+    <input type="hidden" name="action" value="addInfraction">
+
+    <label for="userId" style="color: #fff;">ID Utilisateur :</label>
+    <select id="userId" name="userId" required style="padding: 5px; border-radius: 4px;">
+      <option disabled selected value="">— Choisir un utilisateur —</option>
+      <% Object.entries(enrichedUsers).forEach(([userId, user]) => { %>
+        <option value="<%= userId %>"><%= user.tag %></option>
+      <% }) %>
+    </select>
+
+    <label for="reason" style="color: #fff;">Motif :</label>
+    <input id="reason" type="text" name="reason" required placeholder="Ex : spam, insulte..." style="padding: 5px; border-radius: 4px; width: 200px;">
+
+    <button type="submit" class="btn">Ajouter</button>
+  </form>
+</div>
+
+<!-- 🔙 Retour au dashboard -->
 <p><a href="/dashboard">← Retour à mes serveurs</a></p>

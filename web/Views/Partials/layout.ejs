@@ -45,7 +45,7 @@
         </p>
 
         <!-- 🚪 Lien déconnexion rapide -->
-        <a href="/auth/logout" style="font-size: 0.8em; color: #ff4c4c;">Se déconnecter</a>
+        <a href="/auth/logout" style="font-size: 0.8em; color: #ff4c4c;">🚪 Se déconnecter</a>
       </div>
     <% } %>
 
@@ -53,13 +53,18 @@
     <nav class="sidebar-nav">
       <% if (!user) { %>
         <!-- 🔓 Public -->
-        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">🏠 Accueil</a>
-        <a href="/auth/login?state=returnToDashboard">🔑 Connexion</a>
-        <a href="/invite">➕ Ajouter le bot</a>
+        <a href="/" class="<%= currentPath === '/' %>">🏠 Accueil</a>
       <% } else { %>
         <!-- 🔐 Privé -->
-        <a href="/" class="<%= currentPath === '/' ? 'active' : '' %>">🏠 Accueil</a>
-        <a href="/dashboard" class="<%= currentPath.startsWith('/dashboard') ? 'active' : '' %>">📂 Mes serveurs</a>
+        <a href="/" class="<%= currentPath === '/' %>">🏠 Accueil</a>
+        <!-- 🔗 Navigation contextuelle pour un serveur -->
+        <% if (currentPath.startsWith('/dashboard/') && currentPath !== '/dashboard') { %>
+          <hr style="border-color: #444; margin: 10px 0;">
+          <a href="#bloc-modules" class="tab-link">🛡️ Modules</a>
+          <a href="#bloc-epic" class="tab-link">📋 Epic Games</a>
+          <a href="#bloc-infractions" class="tab-link">📑 Infractions</a>
+        <% } %>
+        <a href="/dashboard" class="<%= currentPath === '/' %>">📂 Mes serveurs</a>
       <% } %>
     </nav>
   </aside>
@@ -80,6 +85,6 @@
       document.getElementById("sidebar").classList.toggle("open");
     }
   </script>
-
+<script src="/js/scripts.js "></script>
 </body>
 </html>

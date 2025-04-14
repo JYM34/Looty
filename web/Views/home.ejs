@@ -1,54 +1,24 @@
 <% title = "Accueil" %>
 
-<!-- 🏠 Page d'accueil du Dashboard Looty -->
+<div class="home-intro">
+  <h1>🎉 Bienvenue sur le Dashboard de <span class="brand">Looty</span></h1>
+  <p>Votre compagnon Discord pour les jeux gratuits, la modération et bien plus !</p>
 
-<h1>🎉 Bienvenue sur le Dashboard de Looty</h1>
+  <% if (!user) { %>
+    <a href="/auth/login?state=returnToDashboard" class="btn-primary">🔑 Se connecter avec Discord</a>
+  <% } else { %>
+    <p>👋 Bonjour <strong><%= user.username %>#<%= user.discriminator %></strong></p>
+  <% } %>
+</div>
 
-<!-- 🔓 Si l'utilisateur n'est pas connecté -->
-<% if (!user) { %>
-  <!-- 🔑 Connexion Discord -->
-  <p>
-    <a href="/auth//login?state=returnToDashboard">
-      <button>🔑 Se connecter avec Discord</button>
-    </a>
-  </p>
+<hr style="margin: 3em 0; border-color: #444;">
 
-  <!-- ➕ Ajouter le bot -->
-  <p>
-    <a
-    href="/invite"
-    style="
-      display: inline-block;
-      background-color: #5865F2;
-      color: white;
-      font-weight: bold;
-      text-decoration: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: background-color 0.2s;
-    "
-    onmouseover="this.style.backgroundColor='#4752C4'"
-    onmouseout="this.style.backgroundColor='#5865F2'"
-  >
-    ➕ Ajouter Looty sur mon serveur
-  </a>
-  </p>
-
-<!-- 🔐 Si l'utilisateur est connecté -->
-<% } else { %>
-  <!-- 👤 Bienvenue -->
-  <p>👋 Bonjour <strong><%= user.username %>#<%= user.discriminator %></strong></p>
-
-  <!-- 📂 Dashboard -->
-  <p>
-    <a href="/dashboard">
-      <button>📂 Accéder au Dashboard</button>
-    </a>
-  </p>
-
-  <!-- 🚪 Déconnexion -->
-  <p>
-    <a href="/auth/logout">🚪 Se déconnecter</a>
-  </p>
-<% } %>
+<div class="features">
+  <h2>✨ Fonctionnalités de Looty</h2>
+  <ul>
+    <li>🎮 Récupération automatique des <strong>jeux gratuits Epic Games</strong></li>
+    <li>🛡️ <strong>Modération intelligente</strong> avec journalisation des infractions</li>
+    <li>📊 Interface de configuration moderne via ce dashboard</li>
+    <li>📦 Multi-serveur, facile à gérer</li>
+  </ul>
+</div>

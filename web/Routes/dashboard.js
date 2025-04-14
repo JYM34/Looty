@@ -4,13 +4,10 @@ const express = require("express");
 const router = express.Router();
 const authGuard = require("../Middlewares/authGuard");
 const { getGuildConfig, setGuildConfig } = require("../Utils/db"); // 💾 Base JSON
+const { getGuildData, setGuildData } = require("../Utils/guildsFile");
 
-const fs = require("fs");
 const path = require("path");
 //const { log } = require("console");
-
-// 📂 Fichier partagé entre le dashboard et le bot
-const channelsFilePath = path.join(__dirname, "../../shared/guilds.json");
 
 // 📊 GET /dashboard → Liste des serveurs gérables par l'utilisateur
 router.get("/", authGuard, async (req, res) => {
@@ -39,6 +36,42 @@ router.get("/:guildId", authGuard, async (req, res) => {
   // 📦 Lecture config personnalisée (ex: prefix/modération)
   const config = await getGuildConfig(guildId);
 
+  const enrichedUsers = {};
+  const enrichedInfractions = {};
+  const guildInstance = req.client.guilds.cache.get(guildId);
+  
+  if (guildInstance) {
+    const members = await guildInstance.members.fetch();
+  
+    for (const [id, member] of members) {
+      if (!member.user.bot) {
+        const hasDiscriminator = member.user.discriminator !== "0";
+        const tag = hasDiscriminator
+          ? `${member.user.username}#${member.user.discriminator}`
+          : `@${member.user.globalName || member.user.username}`;
+
+          enrichedUsers[id] = {
+            tag,
+            avatar: member.user.displayAvatarURL({ size: 64, extension: 'png' }) // ou .jpg
+          };
+      }
+    }
+  
+    // 💡 Enrichir les infractions pour le tableau
+    const infractions = config.infractions || {};
+    for (const [userId, entries] of Object.entries(config.infractions || {})) {
+      const tag = enrichedUsers[userId]?.tag || userId;
+      const avatar = enrichedUsers[userId]?.avatar || null;
+    
+      enrichedInfractions[userId] = {
+        tag,
+        avatar,
+        entries
+      };
+    }
+  }
+  
+
   // ✅ Vérifie si l'utilisateur a accès à ce serveur
   const guild = user.guilds.find(g => g.id === guildId);
   if (!guild) return res.redirect("/dashboard");
@@ -63,7 +96,9 @@ router.get("/:guildId", authGuard, async (req, res) => {
     user,
     guild,
     config,
-    groupedChannels // ✅ Pour optgroup côté EJS
+    groupedChannels, // ✅ Pour optgroup côté EJS
+    enrichedInfractions,
+    enrichedUsers
   });
 });
 
@@ -72,39 +107,65 @@ router.post("/:guildId", authGuard, async (req, res) => {
   const guildId = req.params.guildId;
   const form = req.body;
 
-  // ✅ Lecture de l’ancien fichier
-  let raw = "{}";
-  if (fs.existsSync(channelsFilePath)) {
-    raw = fs.readFileSync(channelsFilePath, "utf8");
+  if (form.action === "addInfraction") {
+    const { userId, reason } = form;
+  
+    const guildData = getGuildData(guildId);
+  
+    if (!guildData.infractions) guildData.infractions = {};
+    if (!guildData.infractions[userId]) guildData.infractions[userId] = [];
+  
+    guildData.infractions[userId].push({
+      reason,
+      date: new Date().toISOString()
+    });
+  
+    setGuildData(guildId, guildData);
+  
+    log.success(`Nouvelle infraction ajoutée pour ${userId} dans ${guildId}`);
+    return res.redirect(`/dashboard/${guildId}`);
   }
 
-  const channelsJson = JSON.parse(raw);
+  if (form.action === "deleteInfraction") {
+    const { userId, index } = form;
+  
+    const guildData = getGuildData(guildId);
+    if (
+      guildData.infractions &&
+      guildData.infractions[userId] &&
+      guildData.infractions[userId][index]
+    ) {
+      guildData.infractions[userId].splice(index, 1); // supprime l’infraction ciblée
+  
+      // S'il ne reste rien, on nettoie
+      if (guildData.infractions[userId].length === 0) {
+        delete guildData.infractions[userId];
+      }
+  
+      setGuildData(guildId, guildData);
+      log.success(`Infraction supprimée pour ${userId} dans ${guildId}`);
+    } else {
+      log.warn(`Tentative de suppression invalide pour ${userId} @${index}`);
+    }
+  
+    return res.redirect(`/dashboard/${guildId}`);
+  }
+  
 
-  // 🧠 On récupère le nom de la guilde si le bot y est encore
   const guild = req.client.guilds.cache.get(guildId);
   const guildName = guild?.name || "Nom inconnu";
 
-  // 🔄 Écriture des nouveaux salons dans la bonne clé
-  channelsJson[guildId] = {
+  // 🔄 Mise à jour
+  setGuildData(guildId, {
     name: guildName,
     prefix: form.prefix || "!",
     moderation: form.moderation === "true",
     currentGamesChannelId: form.epicChannel,
     nextGamesChannelId: form.epicComingSoonChannel,
     logsChannelId: form.epicLogsChannel
-  };
-
-  // 💾 Sauvegarde dans le fichier partagé
-  fs.writeFileSync(
-    channelsFilePath,
-    JSON.stringify(channelsJson, null, 2),
-    "utf8"
-  );
-  
-  log.debug("/var/www/Looty/web/Routes/dashboard.js : ", JSON.stringify(channelsJson, null, 2));
+  });
 
   log.success(`Synchro enregistrée dans shared/guilds.json pour ${guildId}`);
-
   res.redirect(`/dashboard/${guildId}`);
 });
 

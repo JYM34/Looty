@@ -1,23 +1,31 @@
+// 📁 bot/Events/messageCreate.js
+
+const { getGuildConfig } = require("../../web/Utils/db");
+const { handleMessageModeration } = require("../Modules/moderation");
+
 module.exports = {
-    name: 'messageCreate',
+  name: 'messageCreate',
 
-    execute: async (message) => {
-        // Ignorer les messages envoyés par des bots
-        if (message.author.bot) return;
+  execute: async (message) => {
+    // Ignorer les messages envoyés par des bots
+    if (message.author.bot) return;
 
-        // Ignorer les messages dans les messages directs (DMs)
-        if (message.channel.type === 'dm') return;
+    // Ignorer les messages dans les DMs
+    if (message.channel.type === 'dm') return;
 
-        // Vous pouvez ajouter des actions supplémentaires ici, par exemple :
-        // - Vérifier le contenu du message
-        // - Réagir à certains messages ou mots-clés
-        // - Exécuter des commandes si un certain préfixe est détecté
-        // Exemple : répondre à un message contenant un mot spécifique
-        if (message.content.includes('hello')) {
-            await message.reply('Hello! How can I assist you today?');
-        }
+    // ⚙️ Chargement de la config du serveur
+    const config = getGuildConfig(message.guild.id);
 
-        // Exemple : logger chaque message dans la console (utile pour le débogage)
-        log.info(`${message.author.tag} a envoyé un message dans ${message.channel.name}: ${message.content}`);
+    // 👮‍♂️ Vérifie et applique la modération si activée
+    await handleMessageModeration(message, config);
+
+    // 🤖 Exemple simple : répondre à un mot-clé
+    if (message.content.includes('hello')) {
+      await message.reply('Hello! How can I assist you today?');
     }
+
+    // 🐛 Logger tous les messages (utile en dev)
+    log.info(`${message.author.tag} a envoyé un message dans ${message.channel.name}: ${message.content}`);
+  }
 };
+
