@@ -1,5 +1,7 @@
 const { ActivityType } = require("discord.js");
 const formatTimeLeft = require("../../Fonctions/formatTimeLeft");
+let logInterval = null;
+let refreshInterval = null;
 
 /**
  * 🕹️ Met à jour dynamiquement le statut du bot selon la promo Epic
@@ -52,8 +54,12 @@ module.exports = function updateBotStatus(client, endTimestamp) {
     }
   }
 
+  // ⛔️ Empêche les doublons d'intervalles
+  if (refreshInterval) clearInterval(refreshInterval);
+  if (logInterval) clearInterval(logInterval);
+
   // 🚀 Mise à jour continue
   refresh();                        // immédiat
-  setInterval(refresh, 60_000);     // chaque minute
-  setInterval(logStatus, 3600_000); // chaque heure
+  refreshInterval = setInterval(refresh, 60_000);     // chaque minute
+  logInterval = setInterval(logStatus, 3600_000);     // chaque heure
 };
