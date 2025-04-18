@@ -58,13 +58,17 @@ Définir les IDs de salons utilisés pour Epic Games :
 
 ```json
   "ID_DU_SERVEUR_ACTUEL": {
+    "epic": {
+      "country": "FR",
+      "locale": "fr-FR",
+      "currentGamesChannelId": "ID_DU_SALON_JEU_GRATUIT",
+      "nextGamesChannelId": "ID_DU_SALON_PROCHAIN_JEU_GRATUIT",
+      "logsChannelId": "ID_DU_SALON_LOG"
+    },
     "name": "NOM_DU_SERVEUR",
     "prefix": "!",
-    "moderation": false,
-    "currentGamesChannelId": "ID_DU_SALON_JEU_GRATUIT",
-    "nextGamesChannelId": "ID_DU_SALON_PROCHAIN_JEU_GRATUIT",
-    "logsChannelId": "ID_DU_SALON_LOG"
-  }
+    "moderation": false
+  },
 
 ```
 
