@@ -6,7 +6,7 @@ Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu po
 - 📤 Envoyer automatiquement les jeux dans les salons définis  
 - ⏰ Mettre à jour dynamiquement le statut du bot Discord  
 - 🧹 Nettoyer les anciens messages  
-- 🔧 Offrir des commandes slash pratiques (/epic & /force-check)
+- 🔧 Offrir des commandes slash pratiques (/force-check)
 
 ---
 
@@ -32,13 +32,6 @@ Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu po
 ---
 
 ## 🔧 Commandes Slash
-
-### `/epic`
-> Affiche les jeux Epic Games dans les salons configurés.
-
-- 🔁 Peut être utilisée à tout moment
-- 📤 Réutilise les jeux récupérés
-- ❌ Ne met pas à jour le statut du bot
 
 ### `/force-check`
 > Force un nouveau check complet de l’API Epic Games
@@ -77,7 +70,6 @@ Définir les IDs de salons utilisés pour Epic Games :
 ## 🧪 Démo rapide
 
 ```bash
-/epic         # Affiche les jeux dans les salons
 /force-check  # Force un check + mise à jour du statut
 ```
 
