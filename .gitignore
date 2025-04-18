@@ -20,3 +20,8 @@ Thumbs.db
 # package-lock.json
 
 shared/guilds.json
+
+# 🔒 Fichiers de maintenance Discord.js (non versionnés)
+clear-global-commands.js
+deploy-commands.js
+list-global-commands.js

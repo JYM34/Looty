@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const { EmbedBuilder, SlashCommandBuilder } = require("discord.js");
+const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
     showHelp: true,
@@ -8,7 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("ping")
         .setDescription("Réponds pong")
-        .setDefaultMemberPermissions(Discord.PermissionFlagsBits.Administrator),
+        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     
     run: async (client, interaction) => {
 
