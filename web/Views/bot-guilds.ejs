@@ -1,0 +1,36 @@
+<% title = "📋 Liste des serveurs" %>
+
+<h1>📋 Liste des serveurs où Looty est installé</h1>
+
+<table class="styled-table">
+  <thead>
+    <tr>
+      <th>🖼️ Icone</th>
+      <th>📛 Nom</th>
+      <th>🆔 ID</th>
+      <th>👑 Propriétaire</th>
+      <th>👥 Membres</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% guilds.forEach(guild => { %>
+      <tr>
+        <td>
+          <% if (guild.icon) { %>
+            <img src="https://cdn.discordapp.com/icons/<%= guild.id %>/<%= guild.icon %>.png" alt="icon" width="48" style="border-radius: 8px;">
+          <% } else { %>
+            <span style="color: #888;">Aucune</span>
+          <% } %>
+        </td>
+        <td><strong><%= guild.name %></strong></td>
+        <td><code><%= guild.id %></code></td>
+        <td><%= guild.ownerId %></td>
+        <td><%= guild.memberCount %></td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>
+
+<p style="margin-top: 2em;">
+  <a href="/dashboard">← Retour au dashboard</a>
+</p>

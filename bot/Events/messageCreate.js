@@ -1,6 +1,6 @@
 // 📁 bot/Events/messageCreate.js
 
-const { getGuildConfig } = require("../../web/Utils/guildsFile");
+const { getGuildData } = require("../../web/Utils/guildsFile");
 const { handleMessageModeration } = require("../Modules/moderation");
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     if (message.channel.type === 'dm') return;
 
     // ⚙️ Chargement de la config du serveur
-    const config = getGuildConfig(message.guild.id);
+    const config = getGuildData(message.guild.id);
 
     // 👮‍♂️ Vérifie et applique la modération si activée
     await handleMessageModeration(message, config);

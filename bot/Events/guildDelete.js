@@ -27,11 +27,11 @@ module.exports = {
 
         log.info(`🗑️ Configuration supprimée pour la guilde ${guild.name} (${guild.id})`);
       } else {
-        log.info(`ℹ️ Aucune config à supprimer pour ${guild.name} (${guild.id})`);
+        log.info(`Aucune config à supprimer pour ${guild.name} (${guild.id})`);
       }
 
     } catch (err) {
-      log.error(`❌ Erreur lors de la suppression de la config de ${guild.name} : ${err.message}`);
+      log.error(`Erreur lors de la suppression de la config de ${guild.name} : ${err.message}`);
     }
   }
 };
