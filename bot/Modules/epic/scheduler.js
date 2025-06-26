@@ -1,7 +1,6 @@
 const { getEpicFreeGames } = require("epic-games-free");
-const path = require("path");
-const fs = require("fs");
 const updateStatus = require("./updateStatus");
+const guilds = require("../../../shared/guilds.json");
 
 // 🧷 Variables pour éviter les doubles exécutions
 let waitUntil17hTimeout = null; // timeout pour attendre 17h (Paris) le jour de la fin
@@ -50,19 +49,31 @@ module.exports = async function scheduleTask(client) {
 
         // ✅ On importe dynamiquement l'envoi des embeds
         const sendEpicGamesEmbed = require("./sendEmbeds");
+        log.debug("👀 On importe dynamiquement l'envoi des embeds...");
 
         // 📁 On récupère la config des salons
-        const channelsPath = path.join(__dirname, "../../../shared/guilds.json");
-        const { currentGamesChannelId, nextGamesChannelId } = JSON.parse(
-          fs.readFileSync(channelsPath, "utf-8")
-        );
+        for (const guildId in guilds) {
+          const config = guilds[guildId];
+          if (!config.epic) continue;
 
-        // 📤 Envoie les nouveaux jeux dans les salons configurés
-        await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);
+          const { currentGamesChannelId, nextGamesChannelId } = config.epic;
+
+          log.debug(`Guild: ${guildId} - current: ${currentGamesChannelId} | next: ${nextGamesChannelId}`);
+
+          if (!currentGamesChannelId || !nextGamesChannelId) {
+            log.warn(`Guild ${guildId}: currentGamesChannelId ou nextGamesChannelId manquant, on skip`);
+            continue;
+          }
+
+          // 📤 Envoie les nouveaux jeux dans les salons configurés
+          await sendEpicGamesEmbed(client, currentGamesChannelId, nextGamesChannelId);
+          log.debug("👀 Envoie les nouveaux jeux dans les salons configurés...");
+        }  
 
         // 🕹️ Met à jour le statut du bot avec la date de fin du nouveau jeu
         const newEnd = new Date(currentGames[0].expiryDate).getTime();
         updateStatus(client, newEnd);
+        log.debug("👀 Met à jour le statut du bot avec la date de fin du nouveau jeu...", newEnd);
 
         // 🛑 Nettoie tout polling actif pour éviter les doublons
         if (pollTimeout) clearTimeout(pollTimeout);
@@ -100,6 +111,7 @@ module.exports = async function scheduleTask(client) {
   }
 
   // 📆 Étape 2 : on récupère la date de fin de la promo
+  // ⛔ TEST : FAUSSE DATE → aujourd'hui, 1 minute dans le futur
   const end = new Date(currentGames[0].expiryDate).getTime();
 
   // 🕹️ Étape 3 : mise à jour immédiate du statut du bot
@@ -112,7 +124,10 @@ module.exports = async function scheduleTask(client) {
     // 🔁 On s’assure qu’on n’a pas déjà un timeout actif
     if (waitUntil17hTimeout) clearTimeout(waitUntil17hTimeout);
 
-    log.timer("🕔 Attente jusqu'à 17h (jour de fin de promo) pour commencer les vérifs...");
+    // ➡️ Ajoute ça pour afficher la date cible, heure Paris
+    const scheduled = new Date(Date.now() + delay);
+    const scheduledParis = scheduled.toLocaleString('fr-FR', { timeZone: 'Europe/Paris' });
+    log.timer(`🕔 Mise a jour programmée pour : ${scheduledParis}`);
 
     // ✅ Programmation unique du démarrage à 17h
     waitUntil17hTimeout = setTimeout(() => {
