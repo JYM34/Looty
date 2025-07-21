@@ -33,12 +33,14 @@ module.exports = async function scheduleTask(client) {
    */
   async function pollForNewGames(previousGameIds = [], startTime = Date.now()) {
     const { currentGames } = await getEpicFreeGames();
+    log.debug("👀 on récupère les jeux actuellement en promo...", currentGames);
 
     if (!currentGames.length) {
       // Aucun jeu disponible pour le moment
       log.info("⏳ Aucun jeu détecté. Nouvelle vérif dans 1 min...");
     } else {
       // On extrait les ID ou titres des jeux pour comparer
+      log.debug("👀 On extrait les ID ou titres des jeux pour comparer...");
       const newGameIds = currentGames.map(g => g.id || g.title);
 
       // Si la liste de jeux a changé (un ID ou titre est nouveau), on agit !
@@ -104,9 +106,10 @@ module.exports = async function scheduleTask(client) {
 
   // 📥 Étape 1 : on récupère les jeux actuellement en promo
   const { currentGames } = await getEpicFreeGames();
+  log.debug("👀 Étape 1 : on récupère les jeux actuellement en promo...", currentGames);
 
   if (!currentGames.length) {
-    log.warn("⚠️ Aucun jeu Epic actuellement détecté.");
+    log.warn(" Aucun jeu Epic actuellement détecté.");
     return;
   }
 
