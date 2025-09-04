@@ -128,4 +128,32 @@ module.exports = async function sendEpicGamesEmbed(
   for (const game of nextGames) {
     await sendEmbed(game, nextChannelId);
   }
+
+  async function sendJsonDebug(data, channelId, i) {
+    const channel = client.channels.cache.get(channelId);
+    if (!channel) return;
+
+    // 🧽 Nettoyage des anciens messages dans les deux salons
+    if (i === 0) {
+      await clearChannelMessages(client, channel);
+    }
+
+    const embed = new EmbedBuilder()
+      .setTitle('Debug Epic Games')
+      .setDescription('```json\n' + JSON.stringify(data, null, 2) + '\n```')
+      .setColor(0x00AE86);
+
+    await channel.send({ embeds: [embed] });
+  }
+
+  // 🐞 debug Jeux en cours
+  for (const [index, game] of currentGames.entries()) {
+    await sendJsonDebug(game, '1361479626316058895', index);
+  }
+
+  // 🐞 debug Jeux à venir
+  for (const [index, game] of nextGames.entries()) {
+    await sendJsonDebug(game, '1361479698470666290', index);
+  }
+
 };
