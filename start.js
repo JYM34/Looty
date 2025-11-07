@@ -18,7 +18,7 @@ const loadEvents = require("./bot/Loaders/loadEvents");
     console.clear();
     log.success(`Initialisation...`);
 
-    client.once("ready", () => {
+    client.once("clientReady", () => {
       log.success(`${config.PINK}-------------------------${config.WHITE}`);
       log.success(`${config.GREEN}🌐 Connecté en tant que ${config.BLUE}${client.user.username}${config.WHITE}`);
       log.success(`${config.PINK}-------------------------${config.WHITE}`);

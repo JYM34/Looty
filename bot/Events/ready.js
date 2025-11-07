@@ -3,7 +3,7 @@ const scheduler = require("../Modules/epic/scheduler");
 const { REST, Routes } = require("discord.js");
 
 module.exports = {
-  name: "ready",     // Nom de l’événement Discord
+  name: "clientReady",     // Nom de l’événement Discord
   once: true,        // Ne s’exécute qu’une seule fois à la connexion
 
   /**

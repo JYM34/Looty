@@ -1,7 +1,7 @@
 const validEnvironments = ["debug", "development", "production"];
 
 module.exports ={
-    APP_ENVIRONMENTS: validEnvironments[0],
+    APP_ENVIRONMENTS: validEnvironments[2],
     
     color: "#FF0000",
     WHITE: "\u001b[37m",
