@@ -37,61 +37,101 @@ Looty est un bot Discord full Node.js avec un dashboard web intégré, conçu po
 > Force un nouveau check complet de l’API Epic Games
 
 - 🔍 Vérifie si de nouveaux jeux sont apparus
-- 📤 Envoie les jeux dans les salons
-- ⏰ Met à jour le statut du bot avec un délai de sécurité de 60s
-- ✅ Très utile pour les admins ou tests
+ # 🕹️ Looty — Bot Discord + Dashboard Web
 
----
+ Looty est un bot Discord (Node.js) avec un dashboard web intégré, conçu pour :
 
-## 🔧 Configuration
+ - 🎁 Publier automatiquement les jeux gratuits Epic Games
+ - 📤 Envoyer les jeux dans les salons configurés
+ - ⏰ Mettre à jour le statut du bot et planifier les vérifications
+ - 🔧 Offrir des commandes slash (ex. `/force-check`)
 
-### Fichier `shared/guilds.json`
+ ---
 
-Définir les IDs de salons utilisés pour Epic Games :
+ ## 🚀 Fonctionnalités principales
 
-```json
-  "ID_DU_SERVEUR_ACTUEL": {
-    "epic": {
-      "country": "FR",
-      "locale": "fr-FR",
-      "currentGamesChannelId": "ID_DU_SALON_JEU_GRATUIT",
-      "nextGamesChannelId": "ID_DU_SALON_PROCHAIN_JEU_GRATUIT",
-      "logsChannelId": "ID_DU_SALON_LOG"
-    },
-    "name": "NOM_DU_SERVEUR",
-    "prefix": "!",
-    "moderation": false
-  },
+ - Récupération via l'API `epic-games-free`
+ - Publications automatisées (jeux actuels + prochains)
+ - Dashboard d'administration (OAuth Discord)
+ - Commandes administratives (ex. `/force-check`)
 
-```
+ ---
 
----
+ ## ⚙️ Installation rapide (dev)
 
-## 🧪 Démo rapide
+ ```bash
+ git clone <repo-url>
+ cd Looty
+ npm install
+ cp .env.example .env
+ node start.js        # démarre en local (sans PM2)
+ ```
 
-```bash
-/force-check  # Force un check + mise à jour du statut
-```
+ Pour la production, le projet utilise PM2 :
 
----
+ ```bash
+ npm run start        # démarre via PM2 (voir package.json)
+ npm run looty        # flush/restart/log via PM2
+ ```
 
-## 🛠 Stack Technique
+ ---
 
-- Discord.js v14+
-- Express.js (dashboard)
-- EJS (templates)
-- API custom [`epic-games-free`](https://github.com/JYM34/EpicGamesFree)
-- PM2 (démarrage en prod)
+ ## 🧩 Fichiers & zones importantes (pour contributeurs)
 
----
+ - `start.js` : orchestration (initialise le bot puis démarre le dashboard)
+ - `bot/` : code du bot (client, loaders, events, SlashCommands)
+   - `bot/Loaders/loadCommands.js` : charge et enregistre les commandes slash
+   - `bot/Loaders/loadEvents.js` : charge les événements Discord
+   - `bot/SlashCommands/` : emplacement des commandes (ex: `force-check.js`)
+ - `shared/` : configuration partagée entre bot et dashboard (`guilds.json`)
+ - `web/` : dashboard Express + EJS (routes, vues, passport)
 
-## 👤 Auteur
+ ---
 
-Bot développé par **JYM** 🥃
-Code commenté et structuré pour une lecture fluide & maintenance easy.
+ ## 🔐 Variables d'environnement (essentielles)
 
----
+ - `TOKEN` : token du bot Discord
+ - `CLIENT_ID` : application ID Discord (pour commands)
+ - `GUILD_ID` : ID de la guilde de développement (optionnel)
+ - `SESSION_SECRET` : secret pour `express-session` (ne pas utiliser la valeur par défaut en prod)
+ - `CLIENT_SECRET`, `REDIRECT_URI` : config OAuth Discord
 
-## 📄 Licence
+ Les variables complètes et spéciales (Google API, Drive) sont listées dans `docs/SETUP.md`.
 
-MIT – libre d'utilisation, d’adaptation et d'amélioration.
+ ---
+
+ ## Développer / ajouter une commande slash (rapide)
+
+ 1. Créer un fichier dans `bot/SlashCommands/` avec `module.exports = { data, run }`.
+    - `data` : `SlashCommandBuilder` + `.toJSON()` est attendu par le loader.
+    - `run` : fonction async `(client, interaction) => {}`.
+ 2. Lancer `node deploy-commands.js` pour enregistrer la commande (si nécessaire).
+
+ Voir `bot/Loaders/loadCommands.js` pour l’implémentation exacte du loader.
+
+ ---
+
+ ## Avertissements & bonnes pratiques
+
+ - `shared/guilds.json` est modifié en écriture synchrones par le dashboard et les commandes : évitez les modifications concurrentes et privilégiez des sauvegardes régulières.
+ - Le `SESSION_SECRET` doit être défini en production et stocké dans un secret manager.
+ - Le projet expose un serveur web sur le port `3000` par défaut ; ajustez la config si vous mettez derrière un proxy.
+
+ ---
+
+ ## Contribuer
+
+ Pour les instructions détaillées pour contributeurs (ajout de commande, style de code, pipeline), consultez `CONTRIBUTING.md`.
+
+ ---
+
+  ## 👤 Auteur
+
+  Bot développé par **JYM** 🥃
+  Code commenté et structuré pour une lecture fluide & maintenance easy.
+
+  ---
+
+ ## Licence
+
+ MIT – libre d'utilisation, d’adaptation et d'amélioration.
