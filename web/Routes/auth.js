@@ -1,3 +1,12 @@
+/**
+ * web/Routes/auth.js
+ * Routes d'authentification via Discord (passport-discord)
+ * - GET /auth/login     -> redirige vers Discord
+ * - GET /auth/callback  -> callback OAuth2
+ * - GET /auth/logout    -> déconnexion
+ *
+ * Note: `state` est transmis en query pour redirections spécifiques (ex: `returnToDashboard`).
+ */
 // 📦 Importation du routeur Express
 const router = require("express").Router();
 

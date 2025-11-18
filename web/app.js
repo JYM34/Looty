@@ -1,5 +1,9 @@
 // 📦 web/app.js
 
+/**
+ * Initialise et démarre l'application Express pour le dashboard.
+ * @param {import('discord.js').Client} client - Instance du bot Discord (passée aux routes)
+ */
 const express = require("express");
 const session = require("express-session");
 const passport = require("./passport");
@@ -18,8 +22,9 @@ module.exports = (client) => {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
 
+  // ⚠️ En production, stocker le `secret` en variable d'environnement
   app.use(session({
-    secret: "lootySecret",
+    secret: process.env.SESSION_SECRET || "lootySecret",
     resave: false,
     saveUninitialized: false
   }));

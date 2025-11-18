@@ -25,3 +25,6 @@ shared/guilds.json
 clear-global-commands.js
 deploy-commands.js
 list-global-commands.js
+
+
+.github/copilot-instructions.md

@@ -1,7 +1,10 @@
-// ==============================
-//   MODULE DE GESTION DU FICHIER games.json
-// ==============================
-
+/**
+ * Module de gestion du fichier `games.json`.
+ * Fournit des utilitaires pour vérifier, créer et sauvegarder le fichier JSON
+ * utilisé par certaines fonctionnalités du bot.
+ *
+ * Export : { TestFile, SaveFile }
+ */
 // 🔧 Dépendances
 const fs = require('fs');
 const path = require('path');
@@ -15,14 +18,14 @@ module.exports = {
 };
 
 // ==============================
-//   CHEMIN ABSOLU DU FICHIER
+//   CHEMIN RELATIF DU FICHIER
 // ==============================
-// games.json est stocké à la racine du projet (au-dessus du dossier courant)
+// games.json est attendu à la racine du projet (au-dessus du dossier courant)
 const filePath = path.join(__dirname, '..', 'games.json');
 
 /**
- * ✅ Vérifie que le fichier games.json existe et contient un tableau JSON valide.
- * - Si le fichier est inexistant ou invalide, on le réinitialise avec un tableau vide.
+ * Vérifie que le fichier `games.json` existe et contient un tableau JSON valide.
+ * Si le fichier est manquant ou invalide, il est réinitialisé avec `[]`.
  */
 function TestFile() {
   fs.readFile(filePath, 'utf8', (err, data) => {

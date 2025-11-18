@@ -1,15 +1,24 @@
 const { EmbedBuilder, SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 
+/**
+ * /get-epic
+ * Commande utilitaire pour tester la récupération depuis `epic-games-free`.
+ * Affiche en console la liste des jeux récupérés (current + next).
+ */
 module.exports = {
-    showHelp: true,
-    category: "info",
+  showHelp: true,
+  category: "info",
     
-    data: new SlashCommandBuilder()
-        .setName("get-epic")
-        .setDescription("Réponds pong")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
+  data: new SlashCommandBuilder()
+    .setName("get-epic")
+    .setDescription("Réponds pong")
+    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     
-    run: async (client, interaction) => {
+  /**
+   * @param {import('discord.js').Client} client
+   * @param {import('discord.js').CommandInteraction} interaction
+   */
+  run: async (client, interaction) => {
 
 const { getEpicFreeGames } = require("epic-games-free");
 const guildConfig = {

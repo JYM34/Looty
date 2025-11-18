@@ -10,6 +10,8 @@ const fs = require("fs");
 
 // --- Authentification Google Drive via JWT (compte de service) ---
 // On utilise un JWT avec clé privée et email du compte de service, permissions lecture seule
+// ATTENTION: `process.env.GOOGLE_PRIVATE_KEY` doit être stockée dans `.env` avec les sauts de ligne
+// remplacés par `\n`. Le code appelle `replace(/\\n/g, '\n')` pour restaurer la clé.
 const drive = google.drive({
   version: "v3",
   auth: new google.auth.JWT(
@@ -87,6 +89,9 @@ async function findSteamFiles(appid, gameName) {
     return { zip: null, lua: null }; // En cas d'erreur, on retourne null pour les deux
   }
 }
+
+// NOTE: cette commande dépend fortement des variables d'environnement Google.
+// Vérifiez `.env` et que `STEAMTOOLS_FOLDER_ID` et les clés Google sont bien renseignés.
 
 // ============================================
 // EXPORT DE LA COMMANDE DISCORD

@@ -1,3 +1,9 @@
+/**
+ * client.js
+ * Initialise l'instance Discord.js utilisée par le bot.
+ * - Définit les intents et partials nécessaires
+ * - Expose `client.commands` (Collection) pour stocker les commandes chargées dynamiquement
+ */
 // 🧠 Configuration du client Discord
 const { Client, Collection, GatewayIntentBits, Partials } = require("discord.js");
 

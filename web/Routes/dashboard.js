@@ -1,3 +1,9 @@
+/**
+ * web/Routes/dashboard.js
+ * Routes du dashboard d'administration : affichage des guildes, configuration Epic,
+ * et outils SteamTools.
+ * Toutes ces routes sont protégées par `authGuard`.
+ */
 const express = require("express");
 const router = express.Router();
 const authGuard = require("../Middlewares/authGuard");

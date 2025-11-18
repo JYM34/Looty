@@ -10,6 +10,11 @@ module.exports = {
         .setDescription("Réponds pong")
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     
+    /**
+     * Retourne le ping websocket du bot.
+     * @param {import('discord.js').Client} client
+     * @param {import('discord.js').CommandInteraction} interaction
+     */
     run: async (client, interaction) => {
 
         const embed = new EmbedBuilder()

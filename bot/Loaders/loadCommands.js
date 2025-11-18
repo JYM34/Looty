@@ -1,3 +1,13 @@
+/**
+ * loadCommands.js
+ * Charge et enregistre les commandes slash du dossier `bot/SlashCommands`.
+ * - Remplit `client.commands` (Map)
+ * - Enregistre les commandes via l'API Discord (guilde locale)
+ *
+ * Notes:
+ * - Nécessite `process.env.TOKEN`, `process.env.CLIENT_ID` et `process.env.GUILD_ID` pour l'enregistrement.
+ * - Ne modifie pas la logique d'exécution des commandes; ajoute seulement les commandes à `client.commands`.
+ */
 // 📦 Modules Node.js natifs
 const { readdirSync, existsSync } = require('fs');
 const path = require('path');
@@ -5,7 +15,10 @@ const path = require('path');
 // 🔗 Discord.js REST API
 const { REST, Routes } = require('discord.js');
 
-// 🚀 Fonction appelée lors du lancement du bot
+/**
+ * @param {import('discord.js').Client} client - Instance du client Discord
+ * @returns {Promise<Object[]>} Liste des définitions de commandes (JSON) enregistrées
+ */
 module.exports = async client => {
   const commands = [];
 
@@ -54,6 +67,7 @@ module.exports = async client => {
   }
 
   // 📡 Enregistrement des commandes via API Discord
+  // Le REST est uniquement utilisé pour pousser les définitions de commandes sur la guilde de test
   const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
   try {

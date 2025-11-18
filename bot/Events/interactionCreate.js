@@ -1,6 +1,18 @@
 const { InteractionType, EmbedBuilder } = require("discord.js");
 require("dotenv").config();
 
+/**
+ * interactionCreate
+ * Gère les interactions (slash commands) reçues par le bot.
+ * Comportement principal :
+ *  - ignore les interactions non-applications et les bots
+ *  - récupère la commande depuis `client.commands` et exécute `command.run(client, interaction)`
+ *  - log l'utilisation dans le salon configuré (`shared/guilds.json`) via `sendDiscordLog`
+ *
+ * Remarques :
+ *  - Si aucun `logsChannelId` n'est configuré pour la guilde, la fonction enregistre un warning et ne lance pas la commande.
+ *    C'est une décision de conception du code actuel — si vous voulez changer cela, consulter ce bloc.
+ */
 module.exports = {
   name: "interactionCreate",
 
@@ -30,7 +42,7 @@ module.exports = {
       const logChannelId = guildConfigs[guildId]?.epic?.logsChannelId;
       
       if (!logChannelId) {
-        log.warn(` Aucun salon log configuré pour le channel ${logChannelId}`);
+        // ⚠️ Aucun salon de log configuré : on avertit et on stoppe (comportement existant)
         log.warn(` Aucun salon log configuré pour la guilde ${guildId}`);
         return;
       }
@@ -51,8 +63,8 @@ module.exports = {
 
 /**
  * 🔔 Log les commandes utilisées dans un salon spécifique
- * @param {Client} client
- * @param {Interaction} interaction
+ * @param {import('discord.js').Client} client
+ * @param {import('discord.js').Interaction} interaction
  * @param {string} channelId
  */
 async function sendDiscordLog(client, interaction, channelId) {

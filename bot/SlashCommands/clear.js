@@ -13,6 +13,11 @@ module.exports = {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
+  /**
+   * Supprime un nombre de messages dans le salon où la commande est exécutée.
+   * @param {import('discord.js').Client} client
+   * @param {import('discord.js').CommandInteraction} interaction
+   */
   async run(client, interaction) {
     const amount = interaction.options.getInteger('nombre');
     const channel = interaction.channel;

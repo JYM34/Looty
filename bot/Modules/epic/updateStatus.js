@@ -5,7 +5,7 @@ let refreshInterval = null;
 
 /**
  * 🕹️ Met à jour dynamiquement le statut du bot selon la promo Epic
- * @param {Client} client - Instance du bot Discord
+ * @param {import('discord.js').Client} client - Instance du bot Discord
  * @param {number} endTimestamp - Date de fin de la promo (en ms)
  */
 module.exports = function updateBotStatus(client, endTimestamp) {

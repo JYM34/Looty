@@ -5,6 +5,19 @@ const formatDate = require("./formatDate");     // 🔠 Formatage des dates
 const sanitizeGame = require("./sanitizeGame"); // 🧼 Nettoyage des données jeu
 
 /**
+ * sendEmbeds.js
+ * Envoie les jeux Epic (current + next) dans les salons configurés.
+ * - Récupère les jeux via `epic-games-free`
+ * - Nettoie les données via `sanitizeGame`
+ * - Construit un embed par jeu et l'envoie dans le salon ciblé
+ * - Optionnel : notifie un salon de logs (`logsChannelId`)
+ *
+ * Remarque : la fonction `clearChannelMessages` tente de supprimer les anciens messages
+ * du bot avant d'envoyer de nouveaux embeds. En production, faites attention aux limites
+ * liées à `bulkDelete` et aux messages datant de plus de 14 jours.
+ */
+
+/**
  * 🧹 Supprime les anciens messages du bot dans un salon
  * @param {Client} client - Instance du bot
  * @param {TextChannel} channel - Salon cible

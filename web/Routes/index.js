@@ -1,4 +1,7 @@
-// Web/Routes/index.js
+/**
+ * web/Routes/index.js
+ * Routes publiques du site : page d'accueil et pages de debug
+ */
 const router = require("express").Router();
 
 router.get("/", (req, res) => {

@@ -5,12 +5,26 @@ const { getEpicFreeGames } = require("epic-games-free");         // 📦 Jeux gr
 const path = require("path");
 const fs = require("fs");
 
+/**
+ * /force-check
+ * Commande d'administration qui force l'appel à l'API Epic Games et l'envoi immédiat
+ * des embeds dans les salons configurés pour la guilde courante.
+ *
+ * - Lit `shared/guilds.json` pour récupérer la configuration de la guilde
+ * - Utilise `epic-games-free` pour récupérer `currentGames`
+ * - Appelle `sendEmbeds` et `updateStatus`
+ */
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("force-check")
     .setDescription("🔁 Force l’envoi immédiat des jeux Epic Games")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
+  /**
+   * Exécute la commande
+   * @param {import('discord.js').Client} client
+   * @param {import('discord.js').CommandInteraction} interaction
+   */
   async run(client, interaction) {
     try {
       await interaction.deferReply({ flags: 64 }); // Réponse éphémère

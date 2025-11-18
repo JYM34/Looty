@@ -1,7 +1,18 @@
+/**
+ * loadEvents.js
+ * Charge les événements présents dans `bot/Events` et les attache au client Discord.
+ * Chaque fichier d'événement doit exporter :
+ *  - `name` (String) : nom de l'événement Discord
+ *  - `execute(...args, client)` (Function) : fonction exécutée à l'émission de l'événement
+ *  - optionnel `once` (Boolean) : si true, utiliser `client.once`
+ */
 const { readdirSync, existsSync } = require('fs');
 const path = require('path');
 
 
+/**
+ * @param {import('discord.js').Client} client
+ */
 module.exports = client => {
     // 📁 Chemin absolu vers le dossier des événements
     const eventsPath = path.join(__dirname, '..', 'Events');

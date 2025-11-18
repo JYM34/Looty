@@ -1,3 +1,12 @@
+/**
+ * messageCreate
+ * Gère les messages entrants :
+ *  - applique la modération (si activée)
+ *  - détecte automatiquement les Steam IDs dans un salon dédié et publie les fichiers associés
+ *
+ * IMPORTANT : cette commande utilise l'API Google Drive via un compte de service. Les variables
+ * d'environnement `GOOGLE_CLIENT_EMAIL` et `GOOGLE_PRIVATE_KEY` doivent être présentes et valides.
+ */
 // 📁 bot/Events/messageCreate.js
 
 const { getGuildData } = require("../../web/Utils/guildsFile");
@@ -27,6 +36,8 @@ const STEAMTOOLS_FOLDER_ID = process.env.STEAMTOOLS_FOLDER_ID || "";
 
 /**
  * Génère une couleur hex selon les genres du jeu
+ * @param {Array|string} genres
+ * @returns {string}
  */
 function genreColor(genres) {
   if (!genres || genres.length === 0) return "#5865F2";

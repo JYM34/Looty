@@ -3,7 +3,9 @@ const fs = require("fs");
 const path = require("path");
 const log = require("../../shared/log"); // adapte au bon chemin
 
-const GUILDS_FILE_PATH = "/var/www/Looty/shared/guilds.json"; // 🔒 chemin vers ton fichier
+// NOTE: chemin absolu utilisé ici. Pour plus de portabilité, préférez une constante relative
+// via `path.join(__dirname, '../../shared/guilds.json')` ou un helper centralisé.
+const GUILDS_FILE_PATH = path.join(__dirname, '..', '..', 'shared', 'guilds.json'); // chemin relatif portable
 
 module.exports = {
   name: "guildDelete",

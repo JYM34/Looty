@@ -1,3 +1,13 @@
+/**
+ * ready.js
+ * Evénement déclenché quand le bot est prêt. Actions principales :
+ *  - lance le `scheduler` (surveillance des promos Epic)
+ *  - enregistre dynamiquement les commandes slash pour chaque guilde
+ *
+ * Remarques opérationnelles :
+ *  - L'enregistrement des slash commands est fait ici guild-by-guild pour garantir la disponibilité
+ *    immédiate des commandes locales. Assurez-vous que `process.env.TOKEN` et `client.user.id` sont corrects.
+ */
 // ⏱️ Fonction centrale pour planifier l'envoi des jeux Epic + mise à jour de statut
 const scheduler = require("../Modules/epic/scheduler");
 const { REST, Routes } = require("discord.js");
@@ -8,7 +18,7 @@ module.exports = {
 
   /**
    * 🔁 Événement déclenché quand le bot est prêt
-   * @param {Client} client - Instance du bot Discord
+   * @param {import('discord.js').Client} client - Instance du bot Discord
    */
   async execute(client) {
     // ✅ Affichage dans le terminal que le bot est bien prêt

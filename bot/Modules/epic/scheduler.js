@@ -1,3 +1,14 @@
+/**
+ * scheduler.js
+ * Planifie et surveille les offres Epic Games :
+ *  - récupère les jeux via `epic-games-free`
+ *  - planifie un poll minute par minute jusqu'à 2h max après la détection d'un changement
+ *  - déclenche `sendEmbeds` pour chaque guilde configurée
+ *
+ * Notes importantes :
+ *  - Utilise `shared/guilds.json` pour parcourir toutes les guildes configurées.
+ *  - Evite les doublons avec `waitUntil17hTimeout` et `pollTimeout`.
+ */
 const { getEpicFreeGames } = require("epic-games-free");
 const updateStatus = require("./updateStatus");
 const guilds = require("../../../shared/guilds.json");

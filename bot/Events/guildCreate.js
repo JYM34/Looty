@@ -1,3 +1,12 @@
+/**
+ * guildCreate
+ * Evénement appelé lorsque le bot rejoint une nouvelle guilde. Actions :
+ *  - vérifie le propriétaire du serveur
+ *  - enregistre les slash commands via l'API Discord
+ *  - poste un message de bienvenue dans un salon adéquat
+ *
+ * Note : `loadSlashCommands()` provient d'un utilitaire côté `web/Utils`.
+ */
 const { REST, Routes, EmbedBuilder } = require("discord.js");
 const loadSlashCommands = require("../../web/Utils/loadSlashCommands")
 module.exports = {
@@ -5,8 +14,8 @@ module.exports = {
 
   /**
    * 🔄 Déclenché automatiquement quand le bot est ajouté à un nouveau serveur
-   * @param {Guild} guild - Le serveur qui vient d’ajouter le bot
-   * @param {Client} client - L'instance du bot Discord
+   * @param {import('discord.js').Guild} guild - Le serveur qui vient d’ajouter le bot
+   * @param {import('discord.js').Client} client - L'instance du bot Discord
    */
   async execute(guild, client) {
     // 🛡️ Étape 1 : On vérifie si le propriétaire du serveur est un bot (précaution)

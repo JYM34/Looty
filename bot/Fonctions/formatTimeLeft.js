@@ -3,6 +3,8 @@
  * Affiche toujours heures et minutes, mais seulement les jours si > 0
  * @param {number} ms - Durée en millisecondes
  * @returns {string} - Formaté en "2j 3h 15mn", "3h 0mn", ou "0h 0mn"
+ * @example
+ * formatTimeLeft(90061000) // => "1j 1h 1min"
  */
 module.exports = function formatTimeLeft(ms) {
   const totalMinutes = Math.floor(ms / 60000);
