@@ -36,7 +36,7 @@ node start.js        # démarre en local (sans PM2)
 
 ```bash
 npm run start        # démarre via PM2 (voir package.json)
-npm run looty        # shortcuts pour flush/restart/log via PM2
+npm run restart        # shortcuts pour flush/restart/log via PM2
 ```
 
 ---
