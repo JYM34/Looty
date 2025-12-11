@@ -53,10 +53,19 @@ module.exports = {
       await command.run(client, interaction);
     } catch (error) {
       log.error(`💥 Erreur lors de l'exécution de /${interaction.commandName} : `, error.message);
-      await interaction.reply({
-        content: "❌ Une erreur est survenue pendant la commande.",
-        ephemeral: true,
-      });
+
+      // Vérifie si on a déjà répondu ou différé la réponse
+      if (interaction.replied || interaction.deferred) {
+        await interaction.followUp({
+          content: "❌ Une erreur est survenue pendant la commande.",
+          ephemeral: true,
+        }).catch(e => log.error("Impossible d'envoyer le message d'erreur (followUp)", e));
+      } else {
+        await interaction.reply({
+          content: "❌ Une erreur est survenue pendant la commande.",
+          ephemeral: true,
+        }).catch(e => log.error("Impossible d'envoyer le message d'erreur (reply)", e));
+      }
     }
   }
 };

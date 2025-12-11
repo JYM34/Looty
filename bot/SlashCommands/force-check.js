@@ -63,23 +63,34 @@ module.exports = {
       });
 
       // 📦 Appelle l’API avec les paramètres régionaux
-      const { currentGames } = await getEpicFreeGames({ guildConfig: { country, locale } });
+      const { currentGames, nextGames } = await getEpicFreeGames({ guildConfig: { country, locale } });
 
-      if (!currentGames.length) {
-        return await interaction.editReply("❌ Aucun jeu gratuit Epic trouvé pour le moment.");
+      // Si AUCUN jeu (ni actuel ni futur), on arrête tout
+      if (!currentGames.length && !nextGames.length) {
+        return await interaction.editReply("❌ Aucun jeu gratuit Epic trouvé (ni actuel, ni à venir).");
       }
 
-      // 📨 Envoi des embeds dans les salons configurés
+      // 📨 Envoi des embeds (même si current est vide, on envoie nextGames)
       await sendEmbeds(client, currentGamesChannelId, nextGamesChannelId, logsChannelId, { country, locale });
 
       // 🕓 Mise à jour du statut
-      const end = new Date(currentGames[0].expiryDate).getTime() + 60_000;
-      updateStatus(client, end);
+      let endDate;
+      if (currentGames.length > 0) {
+          // Cas normal : on prend la fin du jeu actuel
+          endDate = new Date(currentGames[0].expiryDate).getTime() + 60_000;
+      } else if (nextGames.length > 0) {
+          // Cas "vide" : on prend le début du prochain jeu comme échéance
+          endDate = new Date(nextGames[0].effectiveDate).getTime() + 60_000;
+      }
+
+      if (endDate) {
+          updateStatus(client, endDate);
+      }
 
       await interaction.editReply("✅ Vérification Epic Games forcée !");
-    } catch (err) {
-      log.error("Erreur /force-check :", err);
-      await interaction.editReply("❌ Une erreur est survenue pendant l’exécution de la commande.");
+    } catch (error) {
+      log.error("❌ Erreur lors de force-check :", error);
+      await interaction.editReply("❌ Une erreur est survenue lors de la vérification.");
     }
   }
 };
