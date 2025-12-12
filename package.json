@@ -1,11 +1,11 @@
 {
-  "name": "looty",
-  "version": "1.1.0",
+  "name": "Looty",
+  "version": "1.2.0",
   "description": "Bot Discord + dashboard web",
   "main": "bot/index.js",
   "scripts": {
-    "start": "pm2 start start.js --name Looty",
-    "restart": "pm2 flush Looty && pm2 restart Looty && pm2 log Looty"
+    "start": "PORT=3000 pm2 start start.js --name Looty --update-env",
+    "restart": "pm2 flush Looty && PORT=3000 pm2 restart Looty --update-env"
   },
   "author": "",
   "license": "MIT",
