@@ -1,5 +1,5 @@
 {
-  "name": "Looty",
+  "name": "looty",
   "version": "1.2.0",
   "description": "Bot Discord + dashboard web",
   "main": "bot/index.js",

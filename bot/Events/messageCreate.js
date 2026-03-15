@@ -246,7 +246,7 @@ async function handleSteamIdDetection(message, config) {
     );
 
     await channel.send({ 
-      content: `🎮 Voici les infos pour **${game.name}**, demandé par ${message.author.tag} !`,
+      content: `🎮 **${game.name}** disponible sur SLM, demandé par ${message.author.tag} !`,
       embeds: [embed], 
       components: [buttons] 
     });
